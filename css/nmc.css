@@ -1,0 +1,11 @@
+	#nmc_busy_spinner {
+		position: absolute;
+		top: 50%;
+		right: 50%;
+		margin: -24px -24px;
+		width: 48px;
+		height: 48px;
+		visibility: hidden;
+		z-index:1006;
+		background: transparent url('../img/busy-spinner.gif');
+	}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% comment %}
+    
+Main page of the website.
+
+{% endcomment %}
+
+{% block head %}
+    <title>NMC</title>
+    <link href="{{ STATIC_URL }}/css/nmc.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" language="javascipt" src="{{ STATIC_URL }}lib/nmc.js"></script>
+{% endblock %}
+
+{% block content %}
+<body>
+    <header>
+        <h1>NMC Visualizer</h1>
+    </header>
+    Networks:
+    <ul>
+	{% for db in databases %}
+	  <li>
+	    <a href='visualize/{{ db }}'>{{ db }}</a>
+          </li>
+	{% endfor %}	
+	</ul>
+	<br>
+</body>
+{% endblock %})

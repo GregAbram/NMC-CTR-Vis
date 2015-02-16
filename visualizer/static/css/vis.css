@@ -1,0 +1,46 @@
+        html, body {
+        	margin: 0px;
+        	padding: 0px;
+        }       
+        html {
+        	height: 97%;
+        }
+        body {
+        	background-color: lightgrey;
+        }
+        #main_container {
+        	height: 100%;
+        }
+        #controls {
+        	width: 100%;
+        	display: inline-block;
+        	background-color: lightgrey;         
+        }
+        #map {
+            position: relative;
+        	width: 100%;
+        }
+        #col0 {
+        	position: relative;
+        	float: left;
+        	width: 20%;
+        	height: 100%;
+        }
+        #col1 {
+        	float: left;
+        	position: relative;
+        	height: 100%;
+        	width: 25%;
+        }
+        #col2 {
+        	float: left;
+        	position: relative;
+        	height: 100%;
+        	width: 55%;
+        }
+	#mapToggleButton {
+		position:absolute;
+		top:5px;
+		right:10px;
+		z-index:1001
+	}

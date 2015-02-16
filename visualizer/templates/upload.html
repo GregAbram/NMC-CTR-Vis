@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% comment %}
+    
+Main page of the website.
+
+{% endcomment %}
+
+{% block head %}
+    <title>NMC</title>
+{% endblock %}
+
+{% block content %}
+<body>
+    <header>
+        <h1>NMC Visualizer</h1>
+    </header>
+    <h2>{{ database }}</h2>
+    {% for tdd in tdds %} 
+	    <a href=pull_data/{{ database }}:{{ tdd }}>{{ tdd }}</a><br>
+    {% endfor %}
+</body>
+{% endblock %}

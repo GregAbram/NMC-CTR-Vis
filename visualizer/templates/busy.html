@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% comment %}
+    
+Main page of the website.
+
+{% endcomment %}
+
+{% block head %}
+    <title>NMC</title>
+    <script>
+
+    function busy_reply(data)
+    {
+	if (data.status == 'error')
+	{
+	    $('#result').html('Epic Fail!')
+	    $('#busy_done').show();
+	}
+	else if (data.status == 'busy')
+	    setTimeout(check_busy, 20000);
+    	else
+	{
+	    $('#result').html('Success!')
+	    $('#busy_done').show();
+	}
+    }
+
+    function check_busy()
+    {
+        $('#busy_done').hide();
+	$.ajax({
+		url: '/visualizer/new/check_busy/{{ database }}',
+		dataType : 'json',
+		cache: false,
+		success: busy_reply
+		});
+    }
+	
+    $(document).ready(function()
+    {
+	check_busy();
+    });
+
+    </script>
+{% endblock %}
+
+{% block content %}
+<block>
+    <header>
+        <h1>NMC</h1>
+    </header>
+    {{ message }} {{ database }}
+    <div id="busy_done">
+	    <div id=result></div>
+	    <a href=/{{ nxt }} >Continue</a>
+    </div>
+<block>
+{% endblock %}

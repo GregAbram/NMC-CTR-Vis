@@ -1,0 +1,724 @@
+{% extends "base.html" %}
+{% comment %}
+
+Main page of the website.
+
+{% endcomment %}
+
+{% block head %}
+<link href="{{ STATIC_URL }}/css/nmc.css" rel="stylesheet" type="text/css" />
+<link href="{{ STATIC_URL }}/css/vis.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/jquery.cookies.2.2.0.min.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/OpenLayers.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/paths.js"></script>
+<script type="text/javascript" language="javascipt" src="{{ STATIC_URL }}lib/vis.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/cmaps.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/colormapper.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/AnimationControl.js"></script>
+<script type="text/javascript" language="javascript" src="{{ STATIC_URL }}lib/jquery.blockUI.js"></script>
+<script type="text/javascript" language="javascipt" src="{{ STATIC_URL }}lib/nmc.js"></script>
+
+
+<!--  for debugging table layouts
+<style>
+table{
+border-collapse:collapse;
+border:1px solid #FF0000;
+}
+table td{
+border:1px solid #FF0000;
+}
+</style>
+-->
+
+<script>
+var play_png          = "{{ STATIC_URL }}img/play.png";
+var stop_png          = "{{ STATIC_URL }}img/stop.png";
+var step_forward_png  = "{{ STATIC_URL }}img/step-forward.png";
+var step_backward_png = "{{ STATIC_URL }}img/step-backward.png";
+var open_png          = "{{ STATIC_URL }}img/open.png";
+var close_png         = "{{ STATIC_URL }}img/close.png";
+</script>
+
+<style type="text/css">
+.control_panel {
+    font-size: 12px;
+    border: 1px solid;
+}
+
+.view_options_pane {
+    border: 1px solid;
+    font-size: 12px;
+}
+#spinner_container {
+    display: none; 
+    position: absolute; 
+    left: 0px; 
+    top: 0px; 
+    z-index: 1000;
+    width: 100%;
+    height: 100%;
+}
+#spinner {
+    position: absolute; 
+    left: 50%; 
+    top: 50%;
+}
+</style>
+<title>NMC</title>
+{% endblock %}
+
+{% block content %}
+<body id="main_container" style=" min-width: 1200px" onload=resize_app() onresize=resize_app()>
+<div id=spinner_container><img id=spinner src="{{ STATIC_URL }}img/spinner_large.gif"></div> 
+
+<div class=control_panel id=control_div style="position: absolute; top: 0px; left: 45px; z-index: 2001; background-color:#e0e0e0" >
+	<table style="float: left; position: relative">
+		<tr>
+			<td colspan=2>
+				<label style="font-size: 25px; background-color:#e0e0e0">NMC</label>
+				<input style="float: right" type="image"  src="{{ STATIC_URL }}img/control_panel_button.png" onclick="toggle_visibility('view_options')">
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<label>View:</label>
+			</td>
+			<td>
+				<select id=view_type style="clear: both" onchange="set_visible('view_options'); new_view_type(value)">
+					<option value=network selected>Network</option>
+					<option value=network_data>Network Data</option>
+					<option value=linkpaths>Selected Link Paths</option>
+					<option value=busroute>Corridor Travel Time</option>
+					<option value=OD_paths>OD Paths</option>
+					<option value=origin_destination >Origin Destinations</option>
+					<option value=reachtime>Reach Time</option>
+					<option value=transit>Transit</option>
+					<option value=transitOD>TransitOD</option>
+					<option value=debug>Debug</option>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			<td colspan=2>
+				<input style="width: 100%" type=button value='Base Network Preferences' onclick=$("#underlayer_preferences").dialog("open")><br>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<div id="view_options" style="display: none">
+
+	<div class="view_options_pane" id="node_link_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<table>
+			<tr>
+				<td>
+					<div style="width: 250px">
+						<label style="float: left; position: relative">Link Capacity Range:</label>
+						<input type=text id=network_data_cap_min style="left: 10px; top: -5px; width: 50px; float: left; position: relative" value="0" onchange=dataLayer_redraw()> 
+						<input type=text id=network_data_cap_max style="left: 12px; top: -5px; width: 50px; float: left; position: relative" value="max" onchange=dataLayer_redraw()> 
+						<div style="clear: both; width: 100%"></div>
+						<label>Show:</label><br>
+							<table>
+								<tr>
+									<td><input type="checkbox" id="network_data_show_regular_links"  onclick="dataLayer_redraw()" value="1" checked=true onchange=dataLayer_redraw()>regular links</td>
+									<td><input type="checkbox" id="network_data_show_centroid_links" onclick="dataLayer_redraw()" value="100"  onchange=dataLayer_redraw()>centroid links</td>
+								</tr><tr>
+									<td><input type="checkbox" id="network_data_show_regular_nodes"  onclick="dataLayer_redraw()" value="1"  onchange=dataLayer_redraw()>regular nodes</td>
+									<td><input type="checkbox" id="network_data_show_centroid_nodes" onclick="dataLayer_redraw()" value="100"  onchange=dataLayer_redraw()>centroid nodes</td>
+								</tr>
+							</table>
+						<input type=button value=Preferences onclick=$("#network_data_preferences").dialog("open")>
+					</div>
+				</td>
+				<td>
+					<table>
+						<tr>
+							<td align="left">Attribute Data</td>
+							<td align="center">Color By:</td>
+							<td align="center">Width By:</td>
+						</tr>
+						<tr>
+							<td><div style="top:6px;float:left;position:relative">Links:</div><input type="button" style="float:right; " value="+" onclick=open_link_dataset_dialog()></td>
+							<td><select id='link_color_select' style="width: 140px; " onchange="network_attribute_selection()"></select></td>
+							<td><select id='link_size_select' style="width: 140px; " onchange="network_attribute_selection()"></select></td>
+						</tr>
+						<tr>
+							<td><div style="top:6px;float:left;position:relative">Nodes:</div><input type="button" style="float:right; " value="+" onclick=open_node_dataset_dialog()></td>
+							<td><select id='node_color_select' style="width: 140px; " onchange="network_attribute_selection()"></select></td>
+							<td><select id='node_size_select' style="width: 140px; " onchange="network_attribute_selection()"></select></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>	 
+
+	<div class="view_options_pane" id="origin_destination_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<table id=origin_destination_load style="display: none">
+			<tr><td>
+				<table>
+					<tr><td>
+						<label for=view_options_load_data_selector >Paths Dataset:</label>
+					</td><td>
+						<select id=view_options_load_data_selector class='path_data_select' style="width: 100%; "></select>
+					</td></tr>
+				</table>
+			</td></tr>
+			<tr><td>
+				<label>Select:</label>
+				<input type="radio" name="origin_destination_selector" value="1">Origins
+				<input type="radio" name="origin_destination_selector" value="0" checked>Destinations
+			</td></tr>
+			<tr><td>
+				<input style="top: 5px; position: relative" type="button" value="Load" onclick="load_origin_destination_nodes()">
+			</td></tr>
+		</table>
+				
+		<table id=origin_destination_pull style="display: none;">
+			<tr><td>
+				<label class="origin_destination_dataset">cccc</label>
+			</td></tr>
+			<tr><td>
+				<label for=origin_destination_aggregation>Aggregation Interval:</label>
+				<input id=origin_destination_aggregation style="left: 10px; width: 75px" class="aggregation_interval" type="text" value="15" onkeypress="set_aggregation(event, this)">
+			</td></tr>
+			<tr><td>
+				<label for=origin_destination_selection>Selected Nodes:</label>
+				<input style="width:250px;" id="origin_destination_selection" type="text">
+			</td></tr>
+			<tr><td>
+				<input style="position: relative" type="button" id="origin_destination_selection_done_button" value="done" onclick="load_OD_distribution_data()">
+			</td></tr>
+		</table>
+	 
+		<table id=origin_destination_display style="display: none;">
+			<tr><td>
+				<label class="origin_destination_dataset"></label>
+			</td></tr>
+			<tr><td>
+				<label for=origin_destination_color_select>Color:</label>
+				<select id='origin_destination_color_select' style="width: 120px; " onchange="new_origin_destination_attribute_selection()"></select>     
+				<label for=origin_destination_size_select>Width:</label>
+				<select id='origin_destination_size_select' style="width: 120px; " onchange="new_origin_destination_attribute_selection()"></select>   
+				<input style="float:left" type='button' id="new_origin_destination_selection_button" value='Reset' onclick="new_origin_destination_selection()">
+			</td></tr>
+		</table>
+	</div>
+			
+	<div class="view_options_pane" id="OD_paths_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<table id=OD_paths_view_selection style="display: none">
+			<tr><td>
+				<table style="width: 100%">
+					<tr>
+						<td>
+							<label>Path Data:</label>
+						</td><td>
+							<select id=OD_paths_view_data_selector class='path_data_select' style="width: 100%;" onchange='new_OD_paths_selection()()'></select>
+						</td>
+					</tr>
+				</table>
+			</tr></td>
+			<tr><td>
+				<label>Aggregation Interval:</label>
+				<input id=OD_paths_view_aggregation_interval style="top: -5px; width: 40px" class="aggregation_interval" type="text" value="15" onkeypress="set_aggregation(event, this)">
+				<label>Type:</label>
+				<input type="radio" name='ODpath_aggregation_type' style="top: -2px;" value='departure' checked>
+				<label>Path Departure</label>
+				<input type="radio" name='ODpath_aggregation_type' style="top: -2px;" value='link'>
+				<label>Link</label>
+			</tr></td>
+			<tr><td>
+				<table style="width: 100%">
+					<tr>
+						<td>
+							<label>Origin Nodes:</label>
+						</td><td>
+							<input id="OD_paths_origins" style="width: 100%" type="text" onkeypress="text_input_on_enter(event, dataLayer_redraw)">
+						</td><td>
+							<input type=button id='OD_paths_origin_selection_done_button' value='Done' onclick="OD_paths_origin_selection_done()">
+						</td>
+					</tr><tr>
+						<td>
+							<label>Destination Nodes:</label>
+						</td><td>
+							<input id="OD_paths_destinations" style="width: 100%" type="text" onkeypress="text_input_on_enter(event, dataLayer_redraw)">
+						</td><td>
+							<input type=button value="Done" onclick=OD_paths_selection_ready()>
+						</td>
+					</tr>
+				</table>
+			</tr></td>
+			<tr><td>
+				<input type=button value="Reset" onclick=new_OD_paths_selection()>
+			</tr></td>
+		</table>
+
+		<table id=OD_paths_view_display style="display: none">
+			<tr>
+				<td>
+					<label>Color:</label>
+				</td><td>
+					<select id='OD_paths_color_select' style="width: 120px; " onchange="new_OD_paths_color_selection()"></select>     
+				</td>
+			</tr><tr>
+				<td>
+					<label>Width:</label>
+				</td><td>
+					<select id='OD_paths_size_select' style="width: 120px; " onchange="new_OD_paths_size_selection()"></select>   
+				</td>
+			</tr><tr>
+				<td>
+					<input style="top: 20px" type=button value="New" onclick=new_OD_paths_selection()>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="view_options_pane" id="reachtime_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<div id='reachtime_view_selection' style='display: none;'>
+			<div style="height: 25px; float: left; position: relative;">
+				<label for=RT_dataset_selector style="top: 5px">Dataset:</label>
+				<select style="left: 3px;" id=RT_dataset_selector></select>
+				<label style="top: 5px; left: 10px">Interval:</label>
+				<input style="width:35px; left: 15px;" id="RT_interval" value=15 type="text">
+				<label style=" top: 5px; left: 20px">Filter:</label>
+				<select style="width:80px; left: 25px;" id=RT_wndw>
+					<option value=flat selected>Flat</option>
+					<option value=bartlett selected>Bartlett</option>
+					<option value=blackman>Blackman</option>
+					<option value=hamming>Hamming</option>
+					<option value=hanning >Hanning</option>
+				</select> 	    
+				<input style="width:35px; left: 25px;" id="RT_width" value=30 type="text">
+			</div>
+			<div style="clear: both"></div>
+			<div style="height: 25px; float: left; position: relative;">
+				<label style="top: 5px">Origin Nodes:</label>
+				<input style="width:250px; left: 3px;" id="RT_origin_nodes" type="text">
+				<label style="top: 5px; left: 10px">Departure Clip:</label>
+				<input style="top: 5px; left: 8px;" type="checkbox" id="RT_departure_clip" checked>
+				<label style="top: 5px; left: 10px">Eliminate Passed:</label>
+				<input style="top: 5px; left: 8px;" type="checkbox" id="RT_eliminate_passed" checked>
+			</div>
+			<div style="clear: both"></div>
+			<div style="height: 25px; float: left; position: relative;">
+				<label style="top: 5px">Contour Levels:</label>
+				<input style="width:100px; left: 3px;" id="RT_contour_levels" type="text" value="10,20,30,40">
+				<label style="left: 10px; top: 5px">Artery:</label>
+				<input style="width:35px;  left: 15px;" id="RT_artery" type="text" value="0">
+			</div>
+			<div style="clear: both"></div>
+			<input type=button value=Done onclick=do_reachtime()>			    
+		</div>
+				
+		<div id='reachtime_view_display' style='display: none; float: left; position: relative;'>
+			<label id="reachtime_dataset"></label>
+			<label id="reachtime_contours" style="left: 30px; position: relative"></label><br>
+			<label style="top: 5px; left: 10px">Show Contours:</label>
+			<input style="top: 5px; left: 8px;" type="checkbox" id="RT_show_contours" checked onclick=dataLayer_redraw()>
+			<label style="top: 5px; left: 8px">Links:</label>
+			<input style="top: 5px; left: 5px;" type="checkbox" id="RT_show_links" onclick=dataLayer_redraw()>
+			<label style="top: 5px; left: 8px">Locations:</label>
+			<input style="top: 5px; left: 5px;" type="checkbox" id="RT_show_locations" onclick=dataLayer_redraw()>
+			<label style="top: 5px; left: 8px">Origins:</label>
+			<input style="top: 5px; left: 5px;" type="checkbox" id="RT_show_origins" onclick=dataLayer_redraw()>
+			<br>
+			<label style="left: 10px; top: 10px">Contour Fill Opacity:</label>
+			<input style="width:35px; left: 15px; top: 5px;" id="RT_contour_opacity" type="text" value="0.3" onclick=dataLayer_redraw()>
+			<br>
+			<div style="position: relative"><input type=button value=Reset onclick=reset_reachtime()></div>
+		</div>
+	</div>
+
+	<div class="view_options_pane" id="linkpath_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<table id=linkpath_view_options_selection style='display: block'>
+			<tr><td>
+					<label>Path Data:</label>
+					<select class='path_data_select'></select>
+			</tr></td>
+			<tr><td>
+				<input type="checkbox" id="linkpath_selection_include_connectors" onchange="dataLayer_redraw()"><label>Show Connectors</label>
+				<label style="left: 20px; position: relative">Lower capacity limit:</label>
+				<select style="left: 20px; position: relative" id=linkpath_capacity_level onchange=dataLayer_redraw()>
+					<option value=2000 onclick="dataLayer_redraw()" selected>2000</option>
+					<option value=1500 onclick="dataLayer_redraw()"         >1500</option>
+					<option value=1000 onclick="dataLayer_redraw()"         >1000</option>
+					<option value=0    onclick="dataLayer_redraw()"         >all</option>
+				</select>
+			</tr></td>
+			<tr><td>
+				<label style="top: 5px;">Aggregation Interval:</label>
+				<input style="left: 10px;" class="aggregation_interval" type="text" value="15" onkeypress="set_aggregation(event, this)">
+			</tr></td>
+			<tr><td>
+				<label style="left: 10px;">By:</label>
+				<input type="radio" name='linkpath_aggregation_type' style="left: 5px;" value='selected' checked>
+				<label style="top: 5px;">Selected Link Arrival</label>
+				<input type="radio" name='linkpath_aggregation_type' style="left: 5px;" value='departure'>
+				<label style="top: 5px;">Path Departure</label>
+				<input type="radio" name='linkpath_aggregation_type' style="top: 2px;" value='link'>
+				<label style="top: 5px">Individual Links</label>
+			</tr></td>
+			<tr><td>
+				<label>Selected Links:</label>
+				<input id="selected_links" type="text" onkeypress="text_input_on_enter(event || window.event, dataLayer_redraw)">
+				<input type="button" id="link_selection_done_button" value="Selection Done" onclick="link_selection_done()">
+			</tr></td>
+		</table>
+				
+		<div id=linkpath_view_options_display style="display: none; height: auto; width: auto; clear: both; top: 8px">
+			<label style="top: 8px; height: auto;" id=linkpath_view_options_display_dataset>:</label>
+			<br>
+			<label for=linkpath_color_select>Color:</label>
+			<select id='linkpath_color_select' style="width: 120px; " onchange="new_linkpath_color_selection()"></select>     
+			<label for=linkpath_size_select>Width:</label>
+			<select id='linkpath_size_select' style="width: 120px; " onchange="new_linkpath_size_selection()"></select>   
+			<br>
+			<input type="checkbox" id="linkpath_display_include_connectors" onchange="dataLayer_redraw()"><label>Show Connectors</label>
+			<br>
+			<input type='button' id="new_linkpath_selection_button" value='Make New Selection' onclick="select_links_for_linkpaths()">
+		</div>
+
+	</div>
+
+	<div class="view_options_pane" id="busroute_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<div style="top: 8px; height: auto;">
+			<div style="width: 250px; float: left;">
+				<label>Corridor Travel Time Datasets:</label>
+				<input type="button" style="" value="+" onclick=load_corridor_travel_time_dialog()>
+			</div>
+			<select id='busroute_data_select' style="width: 250px; float: left; " disabled="true" onchange="busroute_selection()">
+			</select>
+		</div>			
+		<div style="top: 8px; height: auto; ">
+			<div id="busroute_checkboxes" style="height: 77px; width: 500px; overflow-y: auto"></div>
+		</div>
+	</div>
+
+	<div class="view_options_pane" id="transitOD_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<div style='width: 100px; float: left; position: relative'>
+			<label>Aggregation</label><br>
+			<label>Interval:</label><br>
+			<label id=transitOD_interval_minmax style="font-size: 9px">hello</label><br>
+			<div style="position: relative">
+				<input type=text id='transitOD_interval_start' style='width: 40px; float: left; position: relative' onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)' >
+				<label style="top: 6px; left: 3px; position: relative">Start</label>
+			</div><br>
+			<div>
+				<input type=text id='transitOD_interval_end' style='width: 40px; float: left; position: relative' onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'>
+				<label style="top: 6px; left: 3px; position: relative">End</label>
+			</div><br>
+		</div>
+		<div style='width: 100px; float: left; position: relative'>
+			<label>Aggregate</label><br>
+			<label>By:</label><br>
+			<div style='height: 10px;'></div>
+			<input type="radio" name="transitOD_aggregation" value="departure" checked>Departure<br>
+			<input type="radio" name="transitOD_aggregation" value="arrival">Arrival<br>
+		</div>
+		<div style='width: 400px; top: 7px; float: left; position: relative'>
+			<div>
+				<label style='width: 90px; top: 7px; float: left; position: relative'>Origins:</label>
+				<input type=button style='width: 40px; float: left; position: relative' value=New onclick=new_transitOD_origins()>
+				<input type=button style='width: 40px; float: left; position: relative' value=Add onclick=add_transitOD_origins()>
+				<input type=text id=transitOD_origins style='width: 200px; float: left; position: relative; display: block'>
+			</div>
+			<div>
+				<label style='width: 90px; top: 7px; float: left; position: relative'>Destinations:</label>
+				<input type=button style='width: 40px; float: left; position: relative' value=New onclick=new_transitOD_destinations()>
+				<input type=button style='width: 40px; float: left; position: relative' value=Add onclick=add_transitOD_destinations()>
+				<input type=text id=transitOD_destinations style='width: 200px; float: left; position: relative; display: block'>
+			</div>
+			<div style="height: 20px"></div>
+			<input type=button id=transitOD_doit style='width: 80px' value='Do It' onclick=transitOD_doit()>
+		</div>
+		<div style='width: 200px; top: 7px; float: left; position: relative'>
+			<input type="checkbox" id="transitOD_show_links" onchange="dataLayer_redraw()" checked><label>Links</label><br>
+			<input type="checkbox" id="transitOD_show_origins" onchange="dataLayer_redraw()" checked><label>Origins</label><br>
+			<input type="checkbox" id="transitOD_show_destinations" onchange="dataLayer_redraw()" checked><label>Destinations</label><br>     		
+			<input type="checkbox" id="transitOD_show_walks" onchange="dataLayer_redraw()" checked><label>Walks</label><br>     		
+			<input type="checkbox" id="transitOD_show_divergent" onchange="dataLayer_redraw()" checked><label>Divergent</label><br>     		
+		</div>
+	</div>
+					
+	<div class="view_options_pane" id="transit_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<table style="border-collapse: collapse; height: auto; border:1px solid #000000;">
+			<tr>
+				<td style="border-collapse: collapse; height: auto; border:1px solid #000000;">
+					<table>
+						<tr colspan=3>
+							<td>
+								<label>Load</label>
+							</td>
+						</tr>
+						<tr>
+							<td><label>Route Selection</label></td>
+							<td style="vertical-align: top">
+								<label>Departure</label><br>
+								<label>Interval</label><br>
+							</td>
+							<td>
+								<label>Direction</label>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top" rowspan=2>
+								<select id=route_options multiple style="width: 100%; height: 100%" onchange=reset_transit()></select>
+							</td>
+							<td>
+								<div>
+									<label id=transit_interval_minmax style="font-size: 9px"></label>
+								</div>
+								<div style="top: 5px; position: relative">
+									<input type=text id='transit_interval_start' style='width: 40px; float: left; position: relative' onkeypress='text_input_on_enter(event || window.event, reset_transit)' >
+									<label style="top: 6px; left: 3px; position: relative">Start</label>
+								</div><br>
+								<div>
+									<input type=text id='transit_interval_end' style='width: 40px; float: left; position: relative' onkeypress='text_input_on_enter(event || window.event, reset_transit)'>
+									<label style="top: 6px; left: 3px; position: relative">End</label>
+								</div>
+							</td>
+							<td valign="top">
+								<input type="checkbox" id="transit_0" onchange="reset_transit()" checked><label>0</label><br>
+								<input type="checkbox" id="transit_1" onchange="reset_transit()" checked><label>1</label><br>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input type="checkbox" id="transit_include_feeds">
+								<label>With feeds</label>
+							</td>
+							<td  valign="bottom">
+								<input style='width: 100%' type=button value='Load' onclick=transit_doit()>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td style='vertical-align: top; border:1px solid #000000;'>
+					<table>
+						<tr>
+							<td>
+								<label>Display</label>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<label>Show</label>
+							</td>
+							<td>
+								<label>Links By:</label>
+							</td>
+							<td>
+								<label>Stops By:</label>
+								<input type="radio" name="transit_stops_by" onclick="set_invisible('transit_node_attr_setup'); dataLayer_redraw()" value="ba" checked><label>Boarding/Alighting</label>
+								<input type="radio" name="transit_stops_by" onclick="set_visible('transit_node_attr_setup'); dataLayer_redraw()" value="attr"><label>Attribute</label>
+							</td>
+						</tr>
+						<tr>
+							<td valign="top">
+								<input type="checkbox" id="transit_show_links" onchange="dataLayer_redraw()" checked><label>links</label><br>
+								<input type="checkbox" id="transit_show_stops" onchange="dataLayer_redraw()" checked><label>stops</label><br>
+								<input type="checkbox" id="transit_show_feeds" onchange="dataLayer_redraw()"><label>feeds</label>
+							</td>
+							<td valign="top">
+								<table id="transit_link_attr_setup"  style="height: 100%; display: block">
+									<tr>
+										<td colspan=2>
+											<label>Color</label>
+										</td>
+										<td colspan=2>
+											<label>Width</label>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<label>Attribute:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_link_color_attr onchange=dataLayer_redraw()>
+											</select>
+										</td>
+										<td>
+											<label>Attribute:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_link_size_attr onchange=dataLayer_redraw()>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<label>Showing:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_link_color_show onchange=dataLayer_redraw()>
+												 <option value=max selected>max</option>
+												 <option value=min>min</option>
+												 <option value=avg>avg</option>
+												 <option value=tot>tot</option>
+											</select>
+										</td>
+										<td>
+											<label>Showing:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_link_size_show onchange=dataLayer_redraw()>
+												 <option value=max selected>max</option>
+												 <option value=min>min</option>
+												 <option value=avg>avg</option>
+												 <option value=tot>tot</option>
+											</select>
+										</td>
+									</tr>
+								</table>
+							</td>
+							<td>
+								<table id="transit_node_attr_setup"  style="height: 100%; display: none">
+									<tr>
+										<td colspan=2>
+											<label>Color</label>
+										</td>
+										<td colspan=2>
+											<label>Width</label>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<label>Attribute:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_node_color_attr onchange=dataLayer_redraw()>
+											</select>
+										</td>
+										<td>
+											<label>Attribute:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_node_size_attr onchange=dataLayer_redraw()>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<label>Showing:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_node_color_show onchange=dataLayer_redraw()>
+												 <option value=max selected>max</option>
+												 <option value=min>min</option>
+												 <option value=avg>avg</option>
+												 <option value=tot>tot</option>
+											</select>
+										</td>
+										<td>
+											<label>Showing:</label>
+										</td>
+										<td>
+											<select style="width: 100%"  id=transit_node_size_show onchange=dataLayer_redraw()>
+												 <option value=max selected>max</option>
+												 <option value=min>min</option>
+												 <option value=avg>avg</option>
+												 <option value=tot>tot</option>
+											</select>
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</div>
+
+	<div class="view_options_pane" id="debug_view_options" style="position: absolute; left: 260px; z-index: 2001; background-color:#e0e0e0; display: none">
+		<div style='width: 350px; float: left; position: relative'>
+		 <label style="top: 5px; width: 90px; float: left; position: relative">Nodes:</label>
+		 <input type=text id=debug_nodes style="left: 10px; width: 200px; float: left; position: relative" onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)' value=""> 
+		 <br>
+		 <label style="top: 5px; width: 90px; float: left; position: relative">Links:</label>
+		 <input type=text id=debug_links style="left: 10px; width: 200px; float: left; position: relative" onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)' value=""> 
+		 <br>
+		</div>
+		<div style='width: 350px; float: left; position: relative'>
+			<input type=button value="Show" onclick=dataLayer_redraw()>
+			<br>
+			<label style="top: 5px; width: 90px; float: left; position: relative">Bad IDs:</label>
+			<input type=text id=debug_messages style="left: 10px; width: 200px; float: left; position: relative" value="">
+			<br>
+		</div>
+	</div>
+
+</div>
+
+<div id="map" style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
+	<table style='position: absolute; bottom: 0px; z-index: 1001; background-color: #e0e0e0'>
+		<tr>
+			<td>
+				<table>
+					<tr style="vertical-align: bottom">
+						<td style="vertical-align: center">
+							<label>Map Intensity:</label>
+						</td><td>
+							<input type="image" id="mapIntensityUp" src="{{ STATIC_URL }}img/up.png" onclick="change_map_intensity(0.1)">
+						</td><td>
+							<input type="image" id="mapIntensityDown" src="{{ STATIC_URL }}img/down.png" onclick="change_map_intensity(-0.1)">
+						</td>
+					</tr>
+				</table>
+			</td><td>
+				<input type=button value="Show/Hide Mappers" onclick="toggle_visibility('ColorMapDiv')">
+			</td><td>
+				<div id="ColorMapDiv" style="display: none"></div>
+			</td>
+		</tr>
+	</table>
+</div>
+
+<script type="text/javascript">
+var network_name = "{{ database }}";
+var network_list = [
+		{% for db in database_list %}
+		    "{{ db }}",
+		{% endfor %}	
+];
+</script>
+
+<div id="dialog" title="Basic Dialog" style="width: 400px"></div>
+<div id=underlayer_preferences title=Preferences style="width: 400px">
+  <label>Minimum Link Capacity:</label>
+  <select id=underlayer_capacity_level onchange=underLayer_redraw()>
+   <option value=2000 onclick="underLayer_redraw()" selected>2000</option>
+   <option value=1500 onclick="underLayer_redraw()"         >1500</option>
+   <option value=1000 onclick="underLayer_redraw()"         >1000</option>
+   <option value=0    onclick="underLayer_redraw()"         >all</option>
+  </select>
+  <br>
+  <label style="float: left; position: relative">Links:</label><input type="checkbox" id="underlayer_show_regular_links"  onchange="underLayer_redraw()" value="1" checked><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Color:</label><input id=underlayer_regular_link_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Width:</label><input id=underlayer_regular_link_width type=text style="width: 65px" value=2 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Opacity:</label><input id=underlayer_regular_link_opacity type=text style="width: 65px" value=0.4 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="float: left; position: relative">Nodes:</label><input type="checkbox" id="underlayer_show_regular_nodes"  onchange="underLayer_redraw()" value="1"><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Color:</label><input id=underlayer_regular_node_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Radius:</label><input id=underlayer_regular_node_radius type=text style="width: 65px" value=3 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Opacity:</label><input id=underlayer_regular_node_opacity type=text style="width: 65px" value=0.4 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="float: left; position: relative">Centroids:</label><input type="checkbox" id="underlayer_show_centroid_nodes"  onchange="underLayer_redraw()" value="100"><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Color:</label><input id=underlayer_centroid_node_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Radius:</label><input id=underlayer_centroid_node_radius type=text style="width: 65px" value=3 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Node Opacity:</label><input id=underlayer_centroid_node_opacity type=text style="width: 65px" value=0.4 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="float: left; position: relative">Centroid connectors:</label><input type="checkbox" id="underlayer_show_centroid_links"  onchange="underLayer_redraw()" value="100"><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Color:</label><input id=underlayer_centroid_link_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Width:</label><input id=underlayer_centroid_link_width type=text style="width: 65px" value=2 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+  <label style="left: 20px; width: 140px; float: left; position: relative">Link Opacity:</label><input id=underlayer_centroid_link_opacity type=text style="width: 65px" value=0.4 onkeypress='text_input_on_enter(event || window.event, capture_underLayer_preferences_and_redraw)'><br>
+</div>
+<div id=network_data_preferences title=Preferences style="width: 400px">
+  <label style="width: 140px; float: left; position: relative">Constant Link Color:</label><input id=network_data_link_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+  <label style="width: 140px; float: left; position: relative">Constant Link Width:</label><input id=network_data_link_width type=text style="width: 65px" value=2 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+  <label style="width: 140px; float: left; position: relative">Constant Link Opacity:</label><input id=network_data_link_opacity type=text style="width: 65px" value=1 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+  <label style="width: 140px; float: left; position: relative">Constant Node Color:</label><input id=network_data_node_color type=text style="width: 65px" value=red onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+  <label style="width: 140px; float: left; position: relative">Constant Node Radius:</label><input id=network_data_node_radius type=text style="width: 65px" value=3 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+  <label style="width: 140px; float: left; position: relative">Constant Node Opacity:</label><input id=network_data_node_opacity type=text style="width: 65px" value=1 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
+</div>
+</body> 
+{% endblock %}

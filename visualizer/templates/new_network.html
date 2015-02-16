@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% comment %}
+    
+Main page of the website.
+
+{% endcomment %}
+
+{% block head %}
+    <title>NMC</title>
+{% endblock %}
+
+{% block content %}
+<body>
+    <header>
+        <h1>NMC</h1>
+    </header>
+	<form action="/visualizer/new/" method="post">{% csrf_token %}
+		{{ form.as_p }}
+		<input type="submit" value="Submit" />
+	</form></br>
+	<a href="/visualizer">Cancel</a>
+</body>
+{% endblock %}
