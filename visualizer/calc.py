@@ -1,4 +1,4 @@
-import sys
+import sys, pdb
 import numpy as np
 from TDD import TDD
 from VDB import VDB
@@ -239,6 +239,40 @@ class FuncCall(Atom):
 				return TDD(arg.delta_t, arg.linkids, arg.timesteps, abs(arg.data))
 			else:
 				return abs(arg)
+
+		elif self.name == 'min':
+
+			if len(self.arguments) != 2:
+				raise CalcError('min takes two arguments (%d given)' % len(self.arguments))
+
+			a = self.arguments[0].Evaluate(vdb, vardict)
+			b = self.arguments[1].Evaluate(vdb, vardict)
+
+			if a.__class__.__name__ == 'TDD' and b.__class__.__name__ == 'TDD':
+				return TDD(a.delta_t, a.linkids, a.timesteps, np.minimum(a.data, b.data))
+			elif a.__class__.__name__ == 'TDD':
+				return TDD(a.delta_t, a.linkids, a.timesteps, np.minimum(a.data, b))
+			elif b.__class__.__name__ == 'TDD':
+				return TDD(b.delta_t, b.linkids, b.timesteps, np.minimum(a, b.data))
+			else:
+				return numpy.minimum(arg)
+
+		elif self.name == 'max':
+
+			if len(self.arguments) != 2:
+				raise CalcError('max takes two arguments (%d given)' % len(self.arguments))
+
+			a = self.arguments[0].Evaluate(vdb, vardict)
+			b = self.arguments[1].Evaluate(vdb, vardict)
+
+			if a.__class__.__name__ == 'TDD' and b.__class__.__name__ == 'TDD':
+				return TDD(a.delta_t, a.linkids, a.timesteps, np.maximum(a.data, b.data))
+			elif a.__class__.__name__ == 'TDD':
+				return TDD(a.delta_t, a.linkids, a.timesteps, np.maximum(a.data, b))
+			elif b.__class__.__name__ == 'TDD':
+				return TDD(b.delta_t, b.linkids, b.timesteps, np.maximum(a, b.data))
+			else:
+				return numpy.maximum(arg)
 
 		elif self.name == 'print':
 			for i in self.arguments:

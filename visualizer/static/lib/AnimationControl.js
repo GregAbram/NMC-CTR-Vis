@@ -2,7 +2,7 @@ function AnimationControl(f)
 {
     this.create = function()
     {
-		this.ui = jQuery('<div/>', {style: 'height: 55px; width: 200px; background-color: grey; display: none'});
+		this.ui = jQuery('<div/>', {style: 'height: 55px; width: 300px; background-color: grey; display: none'});
 	
 		this.buttonbox = jQuery('<div/>', 
 						{
@@ -13,9 +13,10 @@ function AnimationControl(f)
 		this.display_text = jQuery('<input/>',
 						{
 						  type:  'text',
-						  style: 'text-align: right; float: left; width: 80px; height: 24px; top: 3px; left: 12px; position: relative;',
+							value: '-',
+						  style: 'text-align: right; float: left; width: 170px; height: 24px; top: 3px; left: 12px; position: relative;',
 						});
-		// this.display_text.prop('disabled', 'true');
+		this.display_text.prop('disabled', 'true');
 		this.display_text.on('keypress', this, function(ev) {if (ev.keyCode == 13) ev.data.display_text_entered();});
 		this.ui.append(this.display_text);
 	
@@ -59,11 +60,11 @@ function AnimationControl(f)
 		this.slider = jQuery('<div/>',
 						{
 						   id:    "animator_slider",
-						   style: "float: left; left: 13px; position: relative; top: 10px; width: 170px; height: 10px;"
+               style: "float: left; left: 13px; position: relative; top: 10px; width: 274px; height: 10px;"
 						});
 		this.ui.append(this.slider);
 	
-		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 200px; height: 165px; background-color: grey; display: none'});
+		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 300px; height: 165px; background-color: grey; display: none'});
 		this.ui.append(this.expansion_container);
 	
 		this.current_label = jQuery('<label/>', {style: "float: left; position: relative; left: 5px; width: 45%; top: 0px"});
@@ -138,6 +139,17 @@ function AnimationControl(f)
 		this.slider.slider('option', 'max',   this.count_text.val()-1);
 		this.slider.slider('value', 32);
 		this.slider.on('slidechange', this,   function(ev, ui) {ev.data.change_slider_value();});
+
+		this.base_datetime_label = jQuery('<label/>', {style: "float: left; position: relative; width: 45%; left: 5px; top: 0px"});
+		this.base_datetime_label.html('Date/Time:');
+		this.base_datetime_text = jQuery('<input/>',
+						{
+						    type:  "text",
+								value: "0",
+						    style: "clear: both; width: 40%; top: -4px; left: 10px; position: relative"
+						});
+		this.expansion_container.append(this.base_datetime_label);
+		this.expansion_container.append(this.base_datetime_text);
     }
 
     this.GetUI = function()
@@ -260,10 +272,27 @@ function AnimationControl(f)
 		}
     }
 
+		this.set_datetime = function(epochSecs) 
+		{
+			if (epochSecs == 0)
+				this.base_datetime_text.val(0);
+			else
+				this.base_datetime_text.val(new Date(epochSecs * 1000));
+		}
+			
     this.display_string = function()
     {
-  		var now = this.tsteps[parseInt(this.current_text.val())];
-		this.display_text.val(now);
+			// tsteps array is in MINUTES - time string calculated from MILLISECONDS - hence the * 60000
+  		var now = this.tsteps[this.current_text.val()] * 60000;
+			var base = this.base_datetime_text.val();
+			if (base != 0)
+			{
+				var base = new Date(base);
+				var nowStr  = new Date(base.getTime() + now);
+				this.display_text.val(nowStr);
+			}
+			else
+				this.display_text.val(now);
     }
 
     this.singlestep = function(inc)

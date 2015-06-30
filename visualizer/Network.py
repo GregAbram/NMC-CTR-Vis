@@ -151,5 +151,9 @@ class Network:
         self.busroutes = {}
         for busroute in db['busroutes'].find():
             self.busroutes[busroute['route']] = ','.join([str(i) for i in busroute['links']])
-    
+
+        a = list(db['Animation'].find({'time_base': {'$exists': True}}))
+        if len(a) > 0: self.time_base = a[0]['time_base']
+        else: self.time_base = 0
+
         return

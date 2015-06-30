@@ -714,7 +714,8 @@ def load_network(request, database):
         'links': linklist, 'linkTypes': network.linktypes.split(','), 'linkAttributes': linkattributes, 
         'busroutes': busroutes,
         'routes': network.routes,
-        'trips': network.trips
+        'trips': network.trips,
+        'time_base': network.time_base
     }
               
     s = simplejson.dumps(result)
