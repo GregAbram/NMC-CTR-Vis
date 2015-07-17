@@ -6,24 +6,68 @@ Main page of the website.
 {% endcomment %}
 
 {% block head %}
-    <title>NMC</title>
+    <title>NMC Visualizer</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Roboto:400);
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            font: normal 14px Roboto,arial,sans-serif;
+            margin-bottom: 30px;
+        }
+
+        html {
+            background-color: #ADD8E6;
+            position: relative;
+            min-height: 100%;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+        }
+    </style>
     <link href="{{ STATIC_URL }}/css/nmc.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" language="javascipt" src="{{ STATIC_URL }}lib/nmc.js"></script>
 {% endblock %}
 
 {% block content %}
 <body>
-    <header>
-        <h1>NMC Visualizer</h1>
-    </header>
-    Networks:
-    <ul>
-	{% for db in databases %}
-	  <li>
-	    <a href='visualize/{{ db }}'>{{ db }}</a>
-          </li>
-	{% endfor %}	
-	</ul>
-	<br>
+<div class="container">
+    <div class="row" style="height:100%">
+        <div class="col-md-2" style="height:100%; background: #D3D3D3;">
+            <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%; padding: 5px;">
+
+            <div class="list-group" style="margin: 10px">
+                <a href="/" class="list-group-item list-group-item-info">
+                <i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
+                Login
+                </a>
+                <a href="/welcome/" class="list-group-item list-group-item-info">
+                <i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
+                Applications  
+                </a>
+            </div>
+        </div>
+
+        <div class="col-md-5" style="height:100%; ">
+            <h3 style="margin:20px 10px 10px 20px">Available Networks: </h3>
+            <div class="list-group">
+            {% for db in databases %}
+                <a href="visualize/{{ db }}" class="list-group-item list-group-item-success">
+                <i class="glyphicon glyphicon-signal" style="margin-right:10px"></i>
+                {{ db }}
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-5" style="height: 100%;">
+        </div>
+    </div>
+    </div>
+</div>
+
 </body>
 {% endblock %})

@@ -13,13 +13,12 @@
         }
 
         html {
-          position: relative;
-          min-height: 100%;
+        	background-color: #ADD8E6;
+        	position: relative;
+          	min-height: 100%;
         }
 
         .container {
-            padding: 10px;
-            margin-left: 20px;
             width: 100%;
             height: 100%;
             position: fixed;
@@ -29,20 +28,34 @@
 
 {% block content %}
 <div class="container">
-    <div class="row">
-        <div class="col-md-3" >
-            <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%">
+    <div class="row" style="height:100%">
+        <div class="col-md-2" style="height:100%; background: #D3D3D3;">
+            <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%; padding: 5px;">
+
+            <div class="list-group" style="margin: 10px">
+            	<a href="/" class="list-group-item list-group-item-info">
+				<i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
+				Login
+				</a>
+				<a href="/welcome/" class="list-group-item list-group-item-info">
+				<i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
+				Applications  
+				</a>
+            </div>
         </div>
-    </div>
-    <div class="row">
-    	<h3>Applications:</h3>
-    </div>
-    <div class="row">
-    	<div class="col-md-4">
-    		<span class="group-btn">     
-                <a href="/visualizer" class="btn btn-primary btn-md">Visualization Tool  <i class="glyphicon glyphicon-eye-open" style="margin-left:10px"></i></a>
-            </span>
+
+    	<div class="col-md-5" style="height:100%; ">
+    		<h3 style="margin:20px 10px 10px 20px">Applications:</h3>
+    		<div class="list-group">
+				<a href="/visualizer" class="list-group-item list-group-item-success">
+				<i class="glyphicon glyphicon-eye-open" style="margin-right:10px"></i>
+				NMC Visualization Tool  
+				</a>
+            </div>
     	</div>
+    	<div class="col-md-5" style="height: 100%;">
+    	</div>
+    </div>
     </div>
 </div>
 

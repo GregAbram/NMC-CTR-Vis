@@ -3,7 +3,7 @@ import os, sys, pdb
 from django.contrib import admin
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, redirect
 from django.conf.urls import patterns, include, url
 # from django.utils import simplejson
 import json as simplejson
@@ -35,7 +35,7 @@ def nmc_login(request):
                 except ObjectDoesNotExist:
                     vu = VisUser(user=user, dbpw=password)
                     vu.save()
-                return render_to_response('welcome.html', {'state': 'Success', 'username': ''}, context_instance=RequestContext(request))
+                return redirect('welcome/', context_instance=RequestContext(request))
             else:
                 return render_to_response('auth.html', {'state': 'Inactive account', 'username': ''}, context_instance=RequestContext(request))
         else:
@@ -44,9 +44,12 @@ def nmc_login(request):
 
     return render_to_response('auth.html', {'state': '', 'username': ''}, context_instance=RequestContext(request))
 
+def applications(request):
+    return render_to_response('welcome.html', {'state': 'Success', 'username': ''}, context_instance=RequestContext(request))
 
 urlpatterns = patterns('',
     url(r'^$', nmc_login),
+    url(r'welcome/', applications),
     url(r'^visualizer/', include('visualizer.urls')),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^admin/', include(admin.site.urls)),
