@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': '/home/gda/workspace/NMC-CTR-Vis/sqlite.db',
+        'NAME': '/home/kevinrtai/Projects/NMC/viztool/sqlite.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',                      
@@ -60,7 +60,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/home/gda/tmp/staticfiles'
+STATIC_ROOT = '/home/kevinrtai/Projects/NMC/viztool/staticfiles'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
@@ -107,7 +107,7 @@ ROOT_URLCONF = 'NMC.urls'
 WSGI_APPLICATION = 'NMC.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/var/www/django/NMC/templates',
+    '/home/kevinrtai/Projects/NMC/viztool/templates',
 )
 
 INSTALLED_APPS = (

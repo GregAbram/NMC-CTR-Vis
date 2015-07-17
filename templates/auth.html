@@ -1,28 +1,102 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<title>Log in</title>
-<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<style>
-body{
-        font-family:Arial,Helvetica,sans-serif;
-        font-size: 12px;
-}
-</style>
-</head>
-<body>
-        {{ state }}
-        <form action="/" method="post">
-                {% csrf_token %}
-                {% if next %}
-                <input type="hidden" name="next" value="{{ next }}" />
-                {% endif %}
-                username:
-                <input type="text" name="username" value="{{ username}}" /><br />
-                password:
-                <input type="password" name="password" value="" /><br />
+{% extends "base.html" %}
 
-                <input type="submit" value="Log In" />
-        </form>
-</body>
-</html>
+{% block head %}
+    <title>Login</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Roboto:400);
+
+        body {
+            -webkit-font-smoothing: antialiased;
+            font: normal 14px Roboto,arial,sans-serif;
+            margin-bottom: 30px;
+        }
+        html {
+          position: relative;
+          min-height: 100%;
+        }
+        .footer {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          /* Set the fixed height of the footer here */
+          height: 30px;
+          background-color: #A0A0A0;
+        }
+
+      .container {
+            padding: 50px;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(#0099FF, #0033FF);
+            position: fixed;
+        }
+
+        .form-login {
+            background-color: #EDEDED;
+            padding-top: 15px;
+            padding-bottom: 25px;
+            padding-left: 25px;
+            padding-right: 25px;
+            border-radius: 15px;
+            border-color:#000000;
+            border-width: 5px;
+            font-size: 14pt;
+            box-shadow:0 1px 0 #cfcfcf;
+        }
+
+        h4 { 
+            border:0 solid #fff; 
+            border-bottom-width:1px;
+            padding-bottom:10px;
+            font-size: 16pt;
+            text-align: center;
+        }
+
+        .form-control {
+            border-radius: 5px;
+        }
+
+        .wrapper {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container" >
+    <div class="row">
+        <div class="col-md-offset-4 col-md-4" >
+            <div class="form-login">
+                <img src="{{ STATIC_URL }}img/combined-sm.png" style="max-width:90%; margin: 0 auto; display: block;";/> 
+                    <form action="/" method="post">             
+                    {% csrf_token %}
+                    {% if next %}
+                        <input type="hidden" name="next" value="{{ next }}" />
+                    {% endif %}
+
+
+                    <h4 style="color:red; font-size:11pt;">{{ state }}</h4>
+                    <input type="text" name="username" class="form-control input-m chat-input" placeholder="username" value="{{username}}"/>
+                    </br>
+                    <input type="password" name="password" class="form-control input-m chat-input" placeholder="password" />
+                    </br>
+                    <div class="wrapper">
+                        <span class="group-btn">     
+                            <input type="submit" class="btn btn-primary btn-block" value="Log In" />
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- I promise I will fix the inline CSS when I get a chance -->
+
+<!-- <footer class="footer">
+      <div style="width: auto; max-width: 680px; padding: 0 15px; margin: 0 position: relative; top: 50%; transform: translateY(-50%);">
+        <p style="color: #0F0F0F font-size:xx-small"><i>Designed by Dr. Greg Abram at the Texas Advanced Computing Center</i></p>
+      </div>
+</footer> -->
+{% endblock %}

@@ -657,13 +657,15 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		<tr>
 			<td>
 				<table>
-					<tr style="vertical-align: bottom">
+					<tr style="vertical-align: center">
 						<td style="vertical-align: center">
-							<label>Map Intensity:</label>
-						</td><td>
-							<input type="image" id="mapIntensityUp" src="{{ STATIC_URL }}img/up.png" onclick="change_map_intensity(0.1)">
-						</td><td>
-							<input type="image" id="mapIntensityDown" src="{{ STATIC_URL }}img/down.png" onclick="change_map_intensity(-0.1)">
+							<label >Map Intensity:</label>
+						</td>
+						<td style="vertical-align: center">
+							<input type="image" id="mapIntensityUp" src="{{ STATIC_URL }}img/up.png" style="display: block; margin:auto; max-width: 30px" onclick="change_map_intensity(0.1)">
+						</td>
+						<td style = "vertical-align: center">
+							<input type="image" id="mapIntensityDown" src="{{ STATIC_URL }}img/down.png" style="display: block; margin:auto; max-width: 30px" onclick="change_map_intensity(-0.1)">
 						</td>
 					</tr>
 				</table>
@@ -720,5 +722,5 @@ var network_list = [
   <label style="width: 140px; float: left; position: relative">Constant Node Radius:</label><input id=network_data_node_radius type=text style="width: 65px" value=3 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
   <label style="width: 140px; float: left; position: relative">Constant Node Opacity:</label><input id=network_data_node_opacity type=text style="width: 65px" value=1 onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)'><br>
 </div>
-</body> 
+</body>
 {% endblock %}
