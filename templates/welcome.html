@@ -1,8 +1,49 @@
 {% extends "base.html" %}
 
-{% block content %}
+{% block head %}
+	<title>Applications</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <style>
+        @import url(http://fonts.googleapis.com/css?family=Roboto:400);
 
-Welcome!
-<a href="/visualizer">Visualizer</a><br>
+        body {
+            -webkit-font-smoothing: antialiased;
+            font: normal 14px Roboto,arial,sans-serif;
+            margin-bottom: 30px;
+        }
+
+        html {
+          position: relative;
+          min-height: 100%;
+        }
+
+        .container {
+            padding: 10px;
+            margin-left: 20px;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-3" >
+            <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%">
+        </div>
+    </div>
+    <div class="row">
+    	<h3>Applications:</h3>
+    </div>
+    <div class="row">
+    	<div class="col-md-4">
+    		<span class="group-btn">     
+                <a href="/visualizer" class="btn btn-primary btn-md">Visualization Tool  <i class="glyphicon glyphicon-eye-open" style="margin-left:10px"></i></a>
+            </span>
+    	</div>
+    </div>
+</div>
 
 {% endblock %}
