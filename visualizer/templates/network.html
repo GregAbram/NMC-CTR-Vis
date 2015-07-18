@@ -18,7 +18,6 @@ Main page of the website.
         }
 
         html {
-            background-color: #ADD8E6;
             position: relative;
             min-height: 100%;
         }
@@ -27,6 +26,16 @@ Main page of the website.
             width: 100%;
             height: 100%;
             position: fixed;
+        }
+        .panel {
+            background-color: #EDEDED;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 5px;
+            padding-right: 5px;
+            border-radius: 15px;
+            font-size: 14pt;
+            box-shadow:0 1px 0 #cfcfcf;
         }
     </style>
     <link href="{{ STATIC_URL }}/css/nmc.css" rel="stylesheet" type="text/css" />
@@ -37,8 +46,11 @@ Main page of the website.
 <body>
 <div class="container">
     <div class="row" style="height:100%">
-        <div class="col-md-2" style="height:100%; background: #D3D3D3;">
-            <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%; padding: 5px;">
+        <div class="col-md-2" style="height:100%; background: #26466D;">
+
+            <div class="panel" style="margin: 10px 0px;">
+                <img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%;">
+            </div>
 
             <div class="list-group" style="margin: 10px">
                 <a href="/" class="list-group-item list-group-item-info">
@@ -56,7 +68,7 @@ Main page of the website.
             <h3 style="margin:20px 10px 10px 20px">Available Networks: </h3>
             <div class="list-group">
             {% for db in databases %}
-                <a href="visualize/{{ db }}" class="list-group-item list-group-item-success">
+                <a href="visualize/{{ db }}" class="list-group-item">
                 <i class="glyphicon glyphicon-signal" style="margin-right:10px"></i>
                 {{ db }}
                 </a>
