@@ -3728,7 +3728,7 @@ var current_view_type;
 
 function new_view_type(value)
 {
-	$(".view_options_pane").each(function() {$(this).hide()});
+	$(".options_panel").each(function() {$(this).hide()});
 	number_of_timesteps = 0;
 	theAnimator.Hide();
 	disableSelection();
@@ -5029,14 +5029,26 @@ function reset_transit()
 function toggle_visibility(id) {
 	 var e = document.getElementById(id);
 	 if(e.style.display == 'block')
-			e.style.display = 'none';
+		e.style.display = 'none';
 	 else
-			e.style.display = 'block';
+		e.style.display = 'block';
+
+	if(id === 'view_options') {
+		if(e.style.display == 'none') {
+			document.getElementById("options_visibility_toggle").className = 'glyphicon glyphicon-chevron-right';	
+		}
+		else {
+			document.getElementById("options_visibility_toggle").className = 'glyphicon glyphicon-chevron-left';	
+		}
+	}
 }
 
 function set_visible(id) {
-	 var e = document.getElementById(id);
+	var e = document.getElementById(id);
 		e.style.display = 'block';
+	if(id === 'view_options') {
+		document.getElementById("options_visibility_toggle").className = 'glyphicon glyphicon-chevron-left';
+	}
 }
 
 function set_invisible(id) {
