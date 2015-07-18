@@ -41,10 +41,14 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 </script>
 
 <style type="text/css">
-.control_panel {
-    font-size: 12px;
-    border: 1px solid;
-}
+
+	.panel {
+            background: rgba(237, 237, 237, 0.75);
+            padding:10px;
+            border-radius: 15px;
+            font-size: 12pt;
+            box-shadow:0 1px 0 #cfcfcf;
+	}
 
 .view_options_pane {
     border: 1px solid;
@@ -72,36 +76,36 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 <body id="main_container" style=" min-width: 1200px" onload=resize_app() onresize=resize_app()>
 <div id=spinner_container><img id=spinner src="{{ STATIC_URL }}img/spinner_large.gif"></div> 
 
-<div class=control_panel id=control_div style="position: absolute; top: 0px; left: 45px; z-index: 2001; background-color:#e0e0e0" >
+<div class="panel" id=control_div style="position: absolute; top: 10px; left: 45px; z-index: 2001;" >
 	<table style="float: left; position: relative">
 		<tr>
 			<td colspan=2>
-				<label style="font-size: 25px; background-color:#e0e0e0">NMC</label>
-				<input style="float: right" type="image"  src="{{ STATIC_URL }}img/control_panel_button.png" onclick="toggle_visibility('view_options')">
+				<label style="font-size: 25px;">NMC</label>
 			</td>
 		</tr>
 		<tr>
 			<td>
-				<label>View:</label>
-			</td>
-			<td>
-				<select id=view_type style="clear: both" onchange="set_visible('view_options'); new_view_type(value)">
-					<option value=network selected>Network</option>
-					<option value=network_data>Network Data</option>
-					<option value=linkpaths>Selected Link Paths</option>
-					<option value=busroute>Corridor Travel Time</option>
-					<option value=OD_paths>OD Paths</option>
-					<option value=origin_destination >Origin Destinations</option>
-					<option value=reachtime>Reach Time</option>
-					<option value=transit>Transit</option>
-					<option value=transitOD>TransitOD</option>
-					<option value=debug>Debug</option>
-				</select>
-			</td>
-		</tr>
-		<tr>
-			<td colspan=2>
-				<input style="width: 100%" type=button value='Base Network Preferences' onclick=$("#underlayer_preferences").dialog("open")><br>
+				<form>
+					<div class="form-group form-inline">
+						<label for="view_type" >View:</label>
+						<select id="view_type" class="form-control" style="clear: both" onchange="set_visible('view_options'); new_view_type(value)">
+							<option value=network selected>Network</option>
+							<option value=network_data>Network Data</option>
+							<option value=linkpaths>Selected Link Paths</option>
+							<option value=busroute>Corridor Travel Time</option>
+							<option value=OD_paths>OD Paths</option>
+							<option value=origin_destination >Origin Destinations</option>
+							<option value=reachtime>Reach Time</option>
+							<option value=transit>Transit</option>
+							<option value=transitOD>TransitOD</option>
+							<option value=debug>Debug</option>
+						</select>
+						<a href="javascript:void(0)" onclick="toggle_visibility('view_options')" class="btn btn-default btn-large" style="margin-left:5px;">
+							<i class="glyphicon glyphicon-cog"></i>
+						</a>
+					</div>
+					<button type="button" class="btn btn-primary" style="width: 100%" onclick=$("#underlayer_preferences").dialog("open")>Base Network Preferences</button>
+				</form>
 			</td>
 		</tr>
 	</table>
