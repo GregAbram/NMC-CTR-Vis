@@ -42,7 +42,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 
 <style type="text/css">
 
-	.panel {
+	.control_panel {
         background: rgba(237, 237, 237, 0.75);
         padding:10px;
         border-radius: 15px;
@@ -56,6 +56,14 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		border-radius: 15px;
 		font-size: 9pt;
 		box-shadow:0 1px 0 #cfcfcf;
+	}
+
+	#mapper_options {
+		font-size: 9pt;
+	}
+
+	#ColorMapDiv {
+		font-size: 9pt;
 	}
 
 #spinner_container {
@@ -80,7 +88,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 <body id="main_container" style=" min-width: 1200px" onload=resize_app() onresize=resize_app()>
 <div id=spinner_container><img id=spinner src="{{ STATIC_URL }}img/spinner_large.gif"></div> 
 
-<div class="panel" id="control_div" style="position: absolute; top: 10px; left: 45px; z-index: 2001;" >
+<div class="control_panel" id="control_div" style="position: absolute; top: 8px; left: 45px; z-index: 2001;" >
 	<table style="float: left; position: relative">
 		<tr>
 			<td colspan=2>
@@ -104,11 +112,13 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 							<option value=transitOD>TransitOD</option>
 							<option value=debug>Debug</option>
 						</select>
-						<a id="options_visibility_button" href="javascript:void(0)" onclick="toggle_visibility('view_options')" class="btn btn-default btn-large" style="margin-left:5px;">
+						<a id="options_visibility_button" href="javascript:void(0)" onclick="toggle_visibility('view_options')" class="btn btn-default btn-md" style="margin-left:5px;">
 							<i id="options_visibility_toggle" class="glyphicon glyphicon-chevron-right"></i>
 						</a>
 					</div>
-					<button type="button" class="btn btn-primary" style="width: 100%" onclick=$("#underlayer_preferences").dialog("open")>Base Network Preferences</button>
+					<button type="button" class="btn btn-primary" style="width: 100%" onclick=$("#underlayer_preferences").dialog("open")>
+						Base Network Preferences
+					</button>
 				</form>
 			</td>
 		</tr>
@@ -116,7 +126,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 </div>
 
 <div id="view_options" style="display: none">
-	<div class="options_panel" id="network" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="network" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<p>No settings for this view</p>
 	</div>
 	<div class="options_panel" id="node_link_view_options" style="position: absolute; top: 10px; left: 350px;z-index: 2001; display: none">
@@ -164,7 +174,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</table>
 	</div>	 
 
-	<div class="options_panel" id="origin_destination_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="origin_destination_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<table id=origin_destination_load style="display: none">
 			<tr><td>
 				<table>
@@ -216,7 +226,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</table>
 	</div>
 			
-	<div class="options_panel" id="OD_paths_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="OD_paths_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<table id=OD_paths_view_selection style="display: none">
 			<tr><td>
 				<table style="width: 100%">
@@ -285,7 +295,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</table>
 	</div>
 
-	<div class="options_panel" id="reachtime_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="reachtime_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<div id='reachtime_view_selection' style='display: none;'>
 			<div style="height: 25px; float: left; position: relative;">
 				<label for=RT_dataset_selector style="top: 5px">Dataset:</label>
@@ -341,7 +351,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</div>
 	</div>
 
-	<div class="options_panel" id="linkpath_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="linkpath_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<table id=linkpath_view_options_selection style='display: block'>
 			<tr><td>
 					<label>Path Data:</label>
@@ -392,7 +402,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 
 	</div>
 
-	<div class="options_panel" id="busroute_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="busroute_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<div style="top: 8px; height: auto;">
 			<div style="width: 250px; float: left;">
 				<label>Corridor Travel Time Datasets:</label>
@@ -406,7 +416,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</div>
 	</div>
 
-	<div class="options_panel" id="transitOD_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="transitOD_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<div style='width: 100px; float: left; position: relative'>
 			<label>Aggregation</label><br>
 			<label>Interval:</label><br>
@@ -452,7 +462,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</div>
 	</div>
 					
-	<div class="options_panel" id="transit_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="transit_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<table style="border-collapse: collapse; height: auto; border:1px solid #000000;">
 			<tr>
 				<td style="border-collapse: collapse; height: auto; border:1px solid #000000;">
@@ -642,7 +652,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		</table>
 	</div>
 
-	<div class="options_panel" id="debug_view_options" style="position: absolute; top: 10px; left: 350px; z-index: 2001; display: none">
+	<div class="options_panel" id="debug_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
 		<div style='width: 350px; float: left; position: relative'>
 		 <label style="top: 5px; width: 90px; float: left; position: relative">Nodes:</label>
 		 <input type=text id=debug_nodes style="left: 10px; width: 200px; float: left; position: relative" onkeypress='text_input_on_enter(event || window.event, dataLayer_redraw)' value=""> 
@@ -663,29 +673,31 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 </div>
 
 <div id="map" style="position: absolute; left: 0px; top: 0px; bottom: 0px; right: 0px">
-	<table style='position: absolute; bottom: 0px; z-index: 1001; background-color: #e0e0e0'>
-		<tr>
-			<td>
-				<table>
-					<tr style="vertical-align: center">
-						<td style="vertical-align: center">
-							<label >Map Intensity:</label>
-						</td>
-						<td style="vertical-align: center">
-							<input type="image" id="mapIntensityUp" src="{{ STATIC_URL }}img/up.png" style="display: block; margin:auto; max-width: 30px" onclick="change_map_intensity(0.1)">
-						</td>
-						<td style = "vertical-align: center">
-							<input type="image" id="mapIntensityDown" src="{{ STATIC_URL }}img/down.png" style="display: block; margin:auto; max-width: 30px" onclick="change_map_intensity(-0.1)">
-						</td>
-					</tr>
-				</table>
-			</td><td>
-				<input type=button value="Show/Hide Mappers" onclick="toggle_visibility('ColorMapDiv')">
-			</td><td>
-				<div id="ColorMapDiv" style="display: none"></div>
-			</td>
-		</tr>
-	</table>
+	<div id="mapper_options" class="control_panel" style="position: absolute; bottom: 10px; left: 10px; z-index: 1001;" >
+		<table>
+			<tr>
+				<td style="vertical-align: center">
+					<label for="mapper_buttons" style="size:14pt;">Opacity:</label>
+					<div id="mapper_buttons" class="btn-group btn-group-sm" role="group" aria-label="...">
+						<button id="mapIntensityUp" type="button" class="btn btn-default" style="margin-left:5px;" onclick="change_map_intensity(0.1)">
+							<i class="glyphicon glyphicon-chevron-up"></i>
+						</button>
+  						<button id="mapIntensityDown" type="button" class="btn btn-default" onclick="change_map_intensity(-0.1)">
+  							<i class="glyphicon glyphicon-chevron-down"></i>
+  						</button>
+  						
+  					</div>
+  					<button id="toggleColorButton" type=button class="btn btn-default btn-sm" onclick="toggle_visibility('ColorMapDiv');">
+  							Color Control
+  					</button>
+				</td>
+				<td>
+					
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="ColorMapDiv" class="control_panel" style="position: absolute; bottom: 10px; left: 270px; z-index: 1001; display: none;"></div>
 </div>
 
 <script type="text/javascript">

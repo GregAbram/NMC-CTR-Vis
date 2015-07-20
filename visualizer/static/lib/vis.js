@@ -3944,13 +3944,14 @@ function val_to_color(v, min, max)
 
 function change_map_intensity(v)
 {
-	if (map_intensity >= 1.0) 
+	temp_map_intensity = map_intensity + v
+	if (temp_map_intensity >= 1.0) 
 	{
 		document.getElementById('mapIntensityUp').disabled = true
 		document.getElementById('mapIntensityDown').disabled = false
 		map_intensity = 1.0
 	}
-	else if (map_intensity < 0.0) 
+	else if (temp_map_intensity <= 0.0) 
 	{
 		document.getElementById('mapIntensityUp').disabled = false
 		document.getElementById('mapIntensityDown').disabled = true
@@ -3960,8 +3961,9 @@ function change_map_intensity(v)
 	{	
 		document.getElementById('mapIntensityUp').disabled = false
 		document.getElementById('mapIntensityDown').disabled = false
+		map_intensity = temp_map_intensity
 	}
-	set_map_intensity(map_intensity + v);
+	set_map_intensity(map_intensity)
 }
 
 function set_map_intensity(v)
@@ -5028,6 +5030,14 @@ function reset_transit()
 
 function toggle_visibility(id) {
 	 var e = document.getElementById(id);
+
+	 if(id === 'ColorMapDiv') {
+	 	if(e.children.length === 0 || (e.children.length > 0 && !e.children[0].hasChildNodes())) {
+	 		e.style.display = 'none';
+	 		return;
+	 	}
+	 }
+ 
 	 if(e.style.display == 'block')
 		e.style.display = 'none';
 	 else
@@ -5041,6 +5051,7 @@ function toggle_visibility(id) {
 			document.getElementById("options_visibility_toggle").className = 'glyphicon glyphicon-chevron-left';	
 		}
 	}
+
 }
 
 function set_visible(id) {
