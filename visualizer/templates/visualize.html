@@ -77,21 +77,22 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		font-size: 9pt;
 	}
 
-#spinner_container {
-    display: none; 
-    position: absolute; 
-    left: 0px; 
-    top: 0px; 
-    z-index: 1000;
-    width: 100%;
-    height: 100%;
-}
-#spinner {
-    position: absolute; 
-    left: 50%; 
-    top: 50%;
-}
+	#spinner_container {
+    	display: none; 
+    	position: absolute; 
+    	left: 0px; 
+    	top: 0px; 
+    	z-index: 1000;
+    	width: 100%;
+    	height: 100%;
+	}
+	#spinner {
+    	position: absolute; 
+    	left: 50%; 
+    	top: 50%;
+	}
 </style>
+
 <title>NMC</title>
 {% endblock %}
 
@@ -123,7 +124,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 							<option value=transitOD>TransitOD</option>
 							<option value=debug>Debug</option>
 						</select>
-						<a id="options_visibility_button" href="javascript:void(0)" onclick="toggle_visibility('view_options')" class="btn btn-default btn-md" style="margin-left:5px;">
+						<a id="options_visibility_button" role="button" href="javascript:void(0)" onclick="toggle_visibility('view_options')" class="btn btn-default btn-md" style="margin-left:5px;">
 							<i id="options_visibility_toggle" class="glyphicon glyphicon-chevron-right"></i>
 						</a>
 					</div>
@@ -474,9 +475,9 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 	</div>
 					
 	<div class="options_panel" id="transit_view_options" style="position: absolute; top: 8px; left: 350px; z-index: 2001; display: none">
-		<table style="border-collapse: collapse; height: auto; border:1px solid #000000;">
+		<table style="border-collapse: collapse; height: auto;">
 			<tr>
-				<td style="border-collapse: collapse; height: auto; border:1px solid #000000;">
+				<td style="border-collapse: collapse; height: auto;">
 					<table>
 						<tr colspan=3>
 							<td>
@@ -526,7 +527,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 						</tr>
 					</table>
 				</td>
-				<td style='vertical-align: top; border:1px solid #000000;'>
+				<td style='vertical-align: top;'>
 					<table>
 						<tr>
 							<td>
