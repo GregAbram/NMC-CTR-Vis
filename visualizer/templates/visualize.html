@@ -46,6 +46,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
         background: rgba(237, 237, 237, 0.75);
         padding:10px;
         border-radius: 15px;
+        border: 1px solid #A8A8A8;
         font-size: 12pt;
         box-shadow:0 1px 0 #cfcfcf;
 	}
@@ -54,8 +55,18 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 		background: rgba(237, 237, 237, 0.8);
 		padding:10px;
 		border-radius: 15px;
+		border: 1px solid #A8A8A8;
 		font-size: 9pt;
 		box-shadow:0 1px 0 #cfcfcf;
+	}
+
+	.ui-dialog {
+        background: rgba(237, 237, 237, 0.8);
+        padding:10px;
+        border-radius: 15px;
+        border: 1px solid #A8A8A8;
+        font-size: 10pt;
+        box-shadow:0 1px 0 #cfcfcf;
 	}
 
 	#mapper_options {
@@ -710,7 +721,7 @@ var network_list = [
 </script>
 
 <div id="dialog" title="Basic Dialog" style="width: 400px"></div>
-<div id=underlayer_preferences title=Preferences style="width: 400px">
+<div id="underlayer_preferences" title="Preferences" style="color: #000000; width: 400px">
   <label>Minimum Link Capacity:</label>
   <select id=underlayer_capacity_level onchange=underLayer_redraw()>
    <option value=2000 onclick="underLayer_redraw()" selected>2000</option>
