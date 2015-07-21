@@ -2,7 +2,7 @@ function AnimationControl(f)
 {
     this.create = function()
     {
-		this.ui = jQuery('<div/>', {style: 'width: 300px; margin-top: 8px; margin-right: 10px; display: none;', class: 'control_panel'});
+		this.ui = jQuery('<div/>', {style: 'width: 300px; margin-top: 8px; margin-right: 15px; display: none;', class: 'control_panel'});
 	
 		this.buttonbox = jQuery('<div/>', 
 						{
@@ -27,10 +27,11 @@ function AnimationControl(f)
 						  class: "btn btn-default btn-xs"
 						}
 					).on('click', this, function(ev){ ev.data.expand(); });
-		this.expand_button.append(jQuery('<span/>',
+		this.expand_button_image =jQuery('<span/>',
 						{
 							class: "glyphicon glyphicon-resize-full"
-						}));
+						}); 
+		this.expand_button.append(this.expand_button_image);
 		this.ui.append(this.expand_button);
 	
 		this.start_stop_button = jQuery('<button/>',
@@ -77,7 +78,7 @@ function AnimationControl(f)
 		this.slider = jQuery('<div/>',
 						{
 						   	id:    "animator_slider",
-               				style: "display: position: relative; width: 95%; margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; height: 10px;"
+               				style: "display: position: relative; width: 95%; margin-top: 10px; margin-bottom: 5px; margin-right: auto; margin-left: auto; height: 10px;"
 						});
 		this.ui.append(this.slider);
 
@@ -98,7 +99,7 @@ function AnimationControl(f)
 		// 		}
 		// });
 	
-		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 300px; height: 165px; display: none'});
+		this.expansion_container = jQuery('<div/>', {style: 'margin: 15px auto; position: relative; width: 300px; height: 165px; display: none;'});
 		this.ui.append(this.expansion_container);
 	
 		this.current_label = jQuery('<label/>', {style: "float: left; position: relative; left: 5px; width: 45%; top: 0px"});
@@ -193,14 +194,14 @@ function AnimationControl(f)
 
     this.expand = function()
     {
-		if (this.expand_button.attr('src') == open_png)
+		if (this.expand_button_image.attr('class') == 'glyphicon glyphicon-resize-full')
 		{
-		    this.expand_button.attr('src', close_png);
+		    this.expand_button_image.attr('class', 'glyphicon glyphicon-resize-small');
 		    this.expansion_container.show();
 		}
 		else
 		{
-		    this.expand_button.attr('src', open_png);
+		    this.expand_button_image.attr('class', 'glyphicon glyphicon-resize-full');
 		    this.expansion_container.hide();
 		}
 	}
