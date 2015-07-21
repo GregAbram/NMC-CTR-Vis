@@ -2,11 +2,11 @@ function AnimationControl(f)
 {
     this.create = function()
     {
-		this.ui = jQuery('<div/>', {style: 'height: 55px; width: 300px; margin-top: 8px; margin-right: 10px; display: none;', class: 'control_panel'});
+		this.ui = jQuery('<div/>', {style: 'width: 300px; margin-top: 8px; margin-right: 10px; display: none;', class: 'control_panel'});
 	
 		this.buttonbox = jQuery('<div/>', 
 						{
-						  style: 'float: left; width: 72px; height: 24px; top: 6px; left: 8px; position: relative;'
+						  style: 'float: left; width: 72px; height: 24px; position: relative;'
 						});
 		this.ui.append(this.buttonbox);
 	
@@ -14,55 +14,89 @@ function AnimationControl(f)
 						{
 						  type:  'text',
 							value: '-',
-						  style: 'text-align: right; float: left; width: 170px; height: 24px; top: 3px; left: 12px; position: relative;',
+						  style: 'text-align: right; float: left; width: 170px; height: 24px; left: 5px; position: relative;',
 						});
 		this.display_text.prop('disabled', 'true');
 		this.display_text.on('keypress', this, function(ev) {if (ev.keyCode == 13) ev.data.display_text_entered();});
 		this.ui.append(this.display_text);
 	
-		this.expand_button = jQuery('<input/>',
+		this.expand_button = jQuery('<button/>',
 						{
-						  style: "top: 4px; left: 16px; position: relative",
-						  type:  "image",
-						  src:   open_png
+						  style: "left: 12px; position: relative",
+						  type:  "button",
+						  class: "btn btn-default btn-xs"
 						}
 					).on('click', this, function(ev){ ev.data.expand(); });
-	
+		this.expand_button.append(jQuery('<span/>',
+						{
+							class: "glyphicon glyphicon-resize-full"
+						}));
 		this.ui.append(this.expand_button);
 	
-		this.start_stop_button = jQuery('<input/>',
+		this.start_stop_button = jQuery('<button/>',
 						{
-						  style: "float:left; top:-2px;position:relative",
-						  type:  "image",
-						  src:   play_png
+						  style: "float:left; position:relative",
+						  type:  "button",
+						  class: "btn btn-default btn-xs"
 						}
 					).on('click', this, function(ev){ ev.data.startstop(); });
+		this.start_stop_button_image = jQuery('<span/>',
+						{
+							id: "play_image",
+							class: "glyphicon glyphicon-play"
+						});
+		this.start_stop_button.append(this.start_stop_button_image);
 		this.buttonbox.append(this.start_stop_button);
 	
-		this.single_step_button_backward = jQuery('<input/>',
+		this.single_step_button_backward = jQuery('<button/>',
 						{
-						  style: "float:left;top:-2px;position:relative",
-						  type:  "image",
-						  src:   step_backward_png
+						  style: "float:left; position:relative",
+						  type:  "button",
+						  class: "btn btn-default btn-xs"
 						}
 					).on('click', this, function(ev){ ev.data.singlestep(-1); });
+		this.single_step_button_backward.append(jQuery('<span/>',
+						{
+							class: "glyphicon glyphicon-backward"
+						}))
 		this.buttonbox.append(this.single_step_button_backward);
 	
-		this.single_step_button_forward = jQuery('<input/>',
+		this.single_step_button_forward = jQuery('<button/>',
 						{
-						  style: "float:left;top:-2px;position:relative",
-						  type:  "image",
-						  src:   step_forward_png
+						  style: "float:left; position:relative",
+						  type:  "button",
+						  class: "btn btn-default btn-xs"
 						}
 					).on('click', this, function(ev){ ev.data.singlestep(1); });
+		this.single_step_button_forward.append(jQuery('<span/>',
+						{
+							class:"glyphicon glyphicon-forward"
+						}));
 		this.buttonbox.append(this.single_step_button_forward);
 	
 		this.slider = jQuery('<div/>',
 						{
-						   id:    "animator_slider",
-               style: "float: left; left: 13px; position: relative; top: 10px; width: 274px; height: 10px;"
+						   	id:    "animator_slider",
+               				style: "display: position: relative; width: 95%; margin-top: 10px; margin-bottom: 10px; margin-right: auto; margin-left: auto; height: 10px;"
 						});
 		this.ui.append(this.slider);
+
+		// this.slider2 = jQuery('<input/>'),
+		// 				{
+		// 					id:"ex1", 
+		// 					data-slider-id:'ex1Slider',
+		// 					type:"text",
+		// 					data-slider-min:"0"
+		// 					data-slider-max:"20"
+		// 					data-slider-step:"1",
+		// 					data-slider-value:"14"
+		// 				});
+		// this.ui.append(this.slider2);
+		// $('#ex1').slider({
+		// 		formatter: function(value) {
+		// 			return 'Current value: ' + value;
+		// 		}
+		// });
 	
 		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 300px; height: 165px; background-color: grey; display: none'});
 		this.ui.append(this.expansion_container);
@@ -173,10 +207,10 @@ function AnimationControl(f)
 
     this.startstop = function()
     {
-		current_button = this.start_stop_button.attr('src');
-		if (current_button == play_png)
+		current_button = this.start_stop_button_image.attr('class');
+		if (current_button == 'glyphicon glyphicon-play')
 		{
-			this.start_stop_button.attr('src', stop_png);
+			this.start_stop_button_image.attr('class', 'glyphicon glyphicon-stop');
 			if (parseInt(this.count_text.val()) >= parseInt(this.current_text.val()))
 				this.Do(0);
 			this.running = true;
@@ -185,7 +219,7 @@ function AnimationControl(f)
 		else
 		{
 		    this.running = false;
-		    this.start_stop_button.attr('src', play_png);
+		    this.start_stop_button_image.attr('class', 'glyphicon glyphicon-play');
 		}
     }
 
