@@ -98,7 +98,7 @@ function AnimationControl(f)
 		// 		}
 		// });
 	
-		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 300px; height: 165px; background-color: grey; display: none'});
+		this.expansion_container = jQuery('<div/>', {style: 'top: 20px; position: relative; width: 300px; height: 165px; display: none'});
 		this.ui.append(this.expansion_container);
 	
 		this.current_label = jQuery('<label/>', {style: "float: left; position: relative; left: 5px; width: 45%; top: 0px"});
