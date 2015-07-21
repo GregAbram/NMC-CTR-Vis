@@ -2,7 +2,7 @@ function AnimationControl(f)
 {
     this.create = function()
     {
-		this.ui = jQuery('<div/>', {style: 'height: 55px; width: 300px; background-color: grey; display: none'});
+		this.ui = jQuery('<div/>', {style: 'height: 55px; width: 300px; margin-top: 8px; margin-right: 10px; display: none;', class: 'control_panel'});
 	
 		this.buttonbox = jQuery('<div/>', 
 						{
