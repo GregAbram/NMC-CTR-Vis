@@ -1,0 +1,41 @@
+@charset "UTF-8";
+
+.row {
+    height: 100%;
+}
+
+.sidebar-list-text {
+    color: rgba(240, 240, 240, 1);
+}
+
+#sidebar, #content{
+    height: 100%;
+}
+
+#sidebar {
+    background-color: rgba(50, 50, 50, .75);
+    margin: 0px;
+    padding: 0px;
+}
+
+#sidebar_nmc-tacc_logo {
+    padding: 5px 15px 5px 5px;
+    border-radius: 0px;
+    border-width: 0px;
+    margin: 0px;
+}
+
+#sidebar_list {
+    padding: 5px;
+}
+
+#sidebar_list > a {
+    border-radius: 0px;
+    background-color: rgba(0, 0, 0, 0);
+    border-width: 0px;
+}
+
+#sidebar_list > a:hover {
+    background-color: rgba(130, 130, 130, .75);
+    border-radius: 0px;
+}
