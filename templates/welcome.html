@@ -1,61 +1,31 @@
 {% extends "base.html" %}
 
 {% block head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/welcome.css" />
 	<title>Applications</title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <style>
-        @import url(http://fonts.googleapis.com/css?family=Roboto:400);
-
-        body {
-            -webkit-font-smoothing: antialiased;
-            font: normal 14px Roboto,arial,sans-serif;
-            margin-bottom: 30px;
-        }
-
-        html {
-        	position: relative;
-          	min-height: 100%;
-        }
-
-        .container {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-        }
-        .panel {
-            background-color: #EDEDED;
-            padding-top: 5px;
-            padding-bottom: 5px;
-            padding-left: 5px;
-            padding-right: 5px;
-            border-radius: 15px;
-            font-size: 14pt;
-            box-shadow:0 1px 0 #cfcfcf;
-        }
-    </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <div class="row" style="height:100%">
-        <div class="col-md-2" style="height:100%; background: #26466D;">
-        	<div class="panel" style="margin: 10px 0px;">
+    <div class="row" >
+        <div id="sidebar" class="col-md-2" >
+        	<div id="sidebar_nmc-tacc_logo" class="panel" >
             	<img src="{{ STATIC_URL }}img/combined-sm.png" style="width:100%;">
             </div>
 
-            <div class="list-group" style="margin: 10px">
-            	<a href="/" class="list-group-item list-group-item-info">
-				<i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
-				Login
+            <div id="sidebar_list" class="list-group">
+            	<a href="/" class="list-group-item">
+				<i class="glyphicon glyphicon-plus sidebar-list-text" style="margin-right:10px">  Login</i>
 				</a>
-				<a href="/welcome/" class="list-group-item list-group-item-info">
-				<i class="glyphicon glyphicon-plus" style="margin-right:10px"></i>
-				Applications  
+				<a href="/welcome/" class="list-group-item ">
+				<i class="glyphicon glyphicon-plus sidebar-list-text" style="margin-right:10px">  Applications</i>
 				</a>
             </div>
         </div>
 
-    	<div class="col-md-5" style="height:100%; ">
+    	<div id="content" class="col-md-5">
     		<h3 style="margin:20px 10px 10px 20px">Applications:</h3>
     		<div class="list-group">
 				<a href="/visualizer" class="list-group-item">
@@ -64,7 +34,7 @@
 				</a>
             </div>
     	</div>
-    	<div class="col-md-5" style="height: 100%;">
+    	<div class="col-md-5">
     	</div>
     </div>
     </div>

@@ -1,98 +1,22 @@
 {% extends "base.html" %}
 
 {% block head %}
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/auth.css"/>
+    <link rel="stylesheet" href="{{ STATIC_URL }}css/base.css"/>
     <title>Login</title>
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-    <style>
-        @import url(http://fonts.googleapis.com/css?family=Roboto:400);
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        body {
-            -webkit-font-smoothing: antialiased;
-            font: normal 14px Roboto,arial,sans-serif;
-            margin-bottom: 30px;
-        }
-        html {
-          position: relative;
-          min-height: 100%;
-        }
-        .footer {
-          position: absolute;
-          bottom: 0;
-          width: 100%;
-          /* Set the fixed height of the footer here */
-          height: 30px;
-          background-color: #A0A0A0;
-        }
-
-        .container {
-            padding: 50px;
-            background-color: rgba(0, 0, 0, 0.5);
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-            position: fixed;
-        }
-
-        .background-image{ 
-            background-size: cover;
-            background-image: url({{ STATIC_URL }}img/austin3.jpg);
-            display: block;
-            overflow:hidden;
-            margin: -20px -20px;
-            box-sizing: border-box;
-            filter: blur(0px);
-            -webkit-filter: blur(0px);
-            height: 110%;
-            left: 0;
-            position: fixed;
-            right: 0;
-            z-index: 1;
-        }
-
-        .panel {
-            background-color: #EDEDED;
-            padding-top: 15px;
-            padding-bottom: 25px;
-            padding-left: 25px;
-            padding-right: 25px;
-            margin-top: 25px;
-            font-size: 14pt;
-        }
-
-        h4 { 
-            border:0 solid #AAAAAA; 
-            border-bottom-width:1px;
-            width: 90%;
-            padding-bottom:10px;
-            margin:20px auto 10px auto;
-            font-size: 16pt;
-            text-align: center;
-        }
-
-        .form-control {
-            border-radius: 5px;
-        }
-
-        .wrapper {
-            text-align: center;
-        }
-    </style>
 
 {% endblock %}
 
 {% block content %}
-<div class="background-image" ></div>
-<div class="container" >
+<div class="background-image" style="background-image: url({{ STATIC_URL }}img/austin3.jpg);"/>
+<div class="background-cover"/>
+<div class="container">
     <div class="row">
         <div class="col-md-offset-4 col-md-4" >
-            <div class="panel">
-                <img src="{{ STATIC_URL }}img/combined-sm.png" style="max-width:90%; margin: 0 auto; display: block;";/> 
+            <div id="login_panel" class="panel">
+                <img id="nmc-tacc_logo" src="{{ STATIC_URL }}img/combined-sm.png"/> 
                     <form action="/" method="post">             
                     {% csrf_token %}
                     {% if next %}
@@ -100,7 +24,7 @@
                     {% endif %}
 
 
-                    <h4 style="color:red; font-size:11pt;">{{ state }}</h4>
+                    <h4 >{{ state }}</h4>
                     <input type="text" name="username" class="form-control input-m chat-input" placeholder="username" value="{{username}}"/>
                     </br>
                     <input type="password" name="password" class="form-control input-m chat-input" placeholder="password" />
@@ -116,11 +40,4 @@
     </div>
 </div>
 
-<!-- I promise I will fix the inline CSS when I get a chance -->
-
-<!-- <footer class="footer">
-      <div style="width: auto; max-width: 680px; padding: 0 15px; margin: 0 position: relative; top: 50%; transform: translateY(-50%);">
-        <p style="color: #0F0F0F font-size:xx-small"><i>Designed by Dr. Greg Abram at the Texas Advanced Computing Center</i></p>
-      </div>
-</footer> -->
 {% endblock %}
