@@ -12,7 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': '/home/gda/workspace/NMC/sqlite.db',
+        'NAME': '/home/gda/workspace/NMC-CTR-Vis/sqlite.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',                      
@@ -60,7 +60,7 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/var/www/django/NMC/staticfiles'
+STATIC_ROOT = '/home/gda/tmp/staticfiles'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"

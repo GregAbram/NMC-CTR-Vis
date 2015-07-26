@@ -527,6 +527,8 @@ function receive_network(data)
 		alert(data['status'])
 		return;
 	}
+
+	if (data['timebase'])
 	
 	segmentList = data.segments;
 	stopList = data.stops;
@@ -631,7 +633,9 @@ function receive_network(data)
 	
 	loading_default_path_data = true;
 	
-	load_corridor_travel_times(data.name)
+	load_corridor_travel_times(data.name);
+
+	theAnimator.set_datetime(data.time_base);
 	
 	underLayer_redraw();
 }

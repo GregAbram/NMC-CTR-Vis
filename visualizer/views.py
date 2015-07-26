@@ -176,19 +176,20 @@ def load_link_paths(request, database, interval, selected_links, agg):
     elif agg == 'selected':
     
         for row in db[dst].find():
-            for i in row['path']:
-                if i in links:
-                    break
+            for i,j in enumerate(row['path']):
+                if j in links:
     
-            ts = int(row['times'][links.index(i)] / interval)
-            if ts not in data:
-                data[ts] = {}
+                    ts = int(row['times'][i] / interval)
+                    if ts not in data:
+                      data[ts] = {}
         
-            for p in row['path']:
-                if p not in data[ts]:
-                    data[ts][p] = 1
-                else:
-                    data[ts][p] += 1
+                    for p in row['path']:
+                      if p not in data[ts]:
+                        data[ts][p] = 1
+                      else:
+                        data[ts][p] += 1
+
+                    break
     
     elif agg == 'path':
     
@@ -714,7 +715,8 @@ def load_network(request, database):
         'links': linklist, 'linkTypes': network.linktypes.split(','), 'linkAttributes': linkattributes, 
         'busroutes': busroutes,
         'routes': network.routes,
-        'trips': network.trips
+        'trips': network.trips,
+        'time_base': network.time_base
     }
               
     s = simplejson.dumps(result)
