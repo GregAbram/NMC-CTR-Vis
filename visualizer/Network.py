@@ -77,20 +77,18 @@ class Network:
                 self.trips.append({'id': t['trip'], 'departure': t['departure'], 'shape': t['shape'], 'route': t['route'], 'segments': t['segments'], 'stops': t['stops']})
         
         first = True
-        for stop in db['stops'].find().sort([("stopid",pymongo.ASCENDING)]):
-                            
+        # for stop in db['stops'].find().sort([("stopid",pymongo.ASCENDING)]):
+        for stop in db['stops'].find():
             if first:
                 first = False
                 for i,j in enumerate(possible_stopattrs):
                     if stop.has_key(j):
                         self.stopattrs.append(possible_stopattrs[i])
                         self.stopattrunits.append(possible_stopattrunits[i])
-               
             self.stops.append(Stop(stop['nodeid'], stop['trip'], [stop[i] for i in self.stopattrs]))
         
         first = True
         for seg in db['segments'].find().sort([("segmentid",pymongo.ASCENDING)]):
-                            
             if first:
                 first = False
                 for i,j in enumerate(possible_segattrs):
@@ -119,32 +117,42 @@ class Network:
         
         self.nodetypes = ','.join([str(i) for i in db.nodes.distinct('type')])
         
-        links = list(db['links'].find())
-        
-        for indx,link in enumerate(links):
+        indx = -1
+        skips = 0
+        link = {'foo': 'none'}
+        c = db['links'].find()
+        for link in c:
+            indx = indx + 1
             lid = link['id']
             typ = link['type']
             src = link['source']
             dst = link['destination']
             pts = link['points']
             attrs = []
-            
+                
             if link.has_key('segments'):
                 trips = link['segments']
             else:
                 trips = []
-                
+                    
             if indx == 0:
                 for i,j in enumerate(possible_linkattrs):
                     if link.has_key(j):
                         self.linkattrs.append(possible_linkattrs[i])
                         self.linkattrunits.append(possible_linkattrunits[i])
+                print 'link attributes: ', self.linkattrs
 
-            for i in self.linkattrs:
-                attrs.append(link[i])
-                
-            self.linkmap[id] = indx          
-            self.links.append(Link(lid, typ, src, dst, pts, trips, attrs))
+            try:
+                for i in self.linkattrs:
+                    attrs.append(link[i])
+            except:
+                skips = skips + 1
+            else:
+                self.linkmap[id] = indx          
+                self.links.append(Link(lid, typ, src, dst, pts, trips, attrs))
+
+        if skips > 0:
+           print 'Skipped ', skips, 'links due to mismatching attributes'
          
         self.linktypes = ','.join([str(i) for i in db.links.distinct('type')])
         
