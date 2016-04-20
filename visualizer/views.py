@@ -39,7 +39,7 @@ def network_page(request):
     mdb['admin'].authenticate(vu.user, vu.dbpw)
     all_databases = mdb.database_names()
     for db in all_databases:
-        if db[:len(user)] == user:
+        if db.split('_')[0] == user:
             dbs.append(db)
     return render(request, 'network.html', {"databases": dbs})
 

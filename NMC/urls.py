@@ -30,7 +30,6 @@ def nmc_login(request):
                 login(request, user)
                 try:
                     vu = VisUser.objects.get(user=user)
-                    print 'hello'
                 except ObjectDoesNotExist:
                     vu = VisUser(user=user, dbpw=password)
                     vu.save()
