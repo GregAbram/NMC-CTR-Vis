@@ -735,7 +735,7 @@ def visualize(request, database):
  
     database_list = [];
     for i in mdb.database_names():
-        if i[:len(user)] == user:
+        if i.split('_')[0] == user:
             database_list.append(i)
     
     return render(request, 'visualize.html', {'database': database, 'database_list': database_list})
