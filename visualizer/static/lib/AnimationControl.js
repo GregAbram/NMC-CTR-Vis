@@ -282,17 +282,19 @@ function AnimationControl(f)
 			
     this.display_string = function()
     {
-			// tsteps array is in MINUTES - time string calculated from MILLISECONDS - hence the * 60000
-  		var now = this.tsteps[this.current_text.val()] * 60000;
-			var base = this.base_datetime_text.val();
-			if (base != 0)
-			{
-				var base = new Date(base);
-				var nowStr  = new Date(base.getTime() + now);
-				this.display_text.val(nowStr);
-			}
-			else
-				this.display_text.val(now);
+		// tsteps array is in MINUTES - time string calculated from MILLISECONDS - hence the * 60000
+		var base = this.base_datetime_text.val();
+		var now = this.tsteps[this.current_text.val()];
+		if (base != 0)
+		{
+			var base = new Date(base);
+			var nowStr  = new Date(base.getTime() + (now * 60000));
+			this.display_text.val(nowStr);
+		}
+		else
+		{
+			this.display_text.val(now);
+		}
     }
 
     this.singlestep = function(inc)

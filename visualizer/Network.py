@@ -67,6 +67,11 @@ class Network:
         self.segattrunits = []
         self.trips = []
         self.routes = []
+
+        if 'od_demand' in db.collection_names():
+            self.has_od_demand_table = 1
+        else:
+            self.has_od_demand_table = 0
         
         if 'routes' in db.collection_names():
             for r in db['routes'].find():
@@ -140,7 +145,6 @@ class Network:
                     if link.has_key(j):
                         self.linkattrs.append(possible_linkattrs[i])
                         self.linkattrunits.append(possible_linkattrunits[i])
-                print 'link attributes: ', self.linkattrs
 
             try:
                 for i in self.linkattrs:

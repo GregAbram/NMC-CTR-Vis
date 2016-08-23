@@ -171,7 +171,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 				<input type="radio" name="origin_destination_selector" value="0" checked>Destinations
 			</td></tr>
 			<tr><td>
-				<input style="top: 5px; position: relative" type="button" value="Load" onclick="load_origin_destination_nodes()">
+				<input style="position: relative" type="button" value="Load" onclick="load_origin_destination_nodes()">
 			</td></tr>
 		</table>
 				
@@ -179,7 +179,7 @@ var close_png         = "{{ STATIC_URL }}img/close.png";
 			<tr><td>
 				<label class="origin_destination_dataset">cccc</label>
 			</td></tr>
-			<tr><td>
+			<tr id='od_path_aggregation_input' style="display: block;"><td>
 				<label for=origin_destination_aggregation>Aggregation Interval:</label>
 				<input id=origin_destination_aggregation style="left: 10px; width: 75px" class="aggregation_interval" type="text" value="15" onkeypress="set_aggregation(event, this)">
 			</td></tr>

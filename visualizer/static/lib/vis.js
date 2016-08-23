@@ -35,6 +35,7 @@ var OD_paths_origins		= [];
 var OD_paths_destinations	= [];
 var OD_paths    			= [];
 
+var has_od_demand_table;
 var OD_distribution_tsteps = [];
 var OD_distribution_data   = [];
 
@@ -528,8 +529,15 @@ function receive_network(data)
 		return;
 	}
 
-	if (data['timebase'])
-	
+        // If dataset has 'od_demand' table, it is pre-aggregated
+        // If not, the user needs to specify the aggregation interval
+
+        has_od_demand_table = data.has_od_demand_table;
+        if (has_od_demand_table == 1)
+	      $('#od_path_aggregation_input').css('display', 'none')
+        else
+              $('#od_path_aggregation_input').css('display', 'block')
+
 	segmentList = data.segments;
 	stopList = data.stops;
 	tripList = data.trips;

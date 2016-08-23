@@ -76,30 +76,29 @@ def load_OD_distribution_data(request, database, interval, given_origins, nodeid
         else:
             given = 'dest'
             want  = 'orig'
-            
-        m = 'function() { emit({nodeid: this.%s, timestep: Math.floor(this.departure / %d)}, 1); }' % (want, interval*60)
 
-        m = Code(m)
-        
-        r  = 'function(key, values) {'
-        r += '  var t = 0;'
-        r += '  for (var i in values)'
-        r += '    t = t + values[i];'
-        r += '  return (key, t);'
-        r += '}'
-
+        r  = 'function(key, values) { var t = 0; for (var i in values) t = t + values[i]; return (key, t); }'
         r = Code(r)
 
-        db.paths.map_reduce(m, r, 'blah', query={given: {'$in': [int(i) for i in nodeids.split(',')]}})
+        if 'od_demand' in db.collection_names():
+            m = 'function() { emit({nodeid: this.%s, timestep: this.departure}, this.demand); }' % (want)
+            m = Code(m)
+            db.od_demand.map_reduce(m, r, 'tmp', query={given: {'$in': [int(i) for i in nodeids.split(',')]}})
+        else:
+            m = 'function() { emit({nodeid: this.%s, timestep: Math.floor(this.departure / %d)}, 1); }' % (want, int(interval*60))
+            m = Code(m)
+            db.paths.map_reduce(m, r, 'tmp', query={given: {'$in': [int(i) for i in nodeids.split(',')]}})
 
         tmp = {}
-        for i in db.blah.find():
+        for i in db.tmp.find():
             nodeid = int(i['_id']['nodeid'])
             ts = int(i['_id']['timestep'])
             value = int(i['value'])
             if ts not in tmp: tmp[ts] = []
             tmp[ts].append({'nodeid': nodeid, 'count': value})
 
+        db.tmp.drop()
+            
         timestep_count = sorted(tmp.keys())[-1] + 1
         timestep_data = [[] for i in range(int(timestep_count))]
         
@@ -716,7 +715,8 @@ def load_network(request, database):
         'busroutes': busroutes,
         'routes': network.routes,
         'trips': network.trips,
-        'time_base': network.time_base
+        'time_base': network.time_base,
+        'has_od_demand_table': network.has_od_demand_table
     }
               
     s = simplejson.dumps(result)
