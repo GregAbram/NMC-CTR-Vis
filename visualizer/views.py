@@ -23,7 +23,6 @@ def attach_mongo(request, database):
     return mdb[database]
         
 def list_datasets(request, database):
-
     try:
         db = attach_mongo(request, database)
         datasets = [i['name'] for i in db['Variables'].find()]
@@ -662,12 +661,11 @@ def load_data(request, network, varname, units, varstring):
         return HttpResponse(simplejson.dumps({'status': 'error evaluating expression'}), mimetype='application/json')
 
 def load_network(request, database):
-            
     try:
         db = attach_mongo(request, database)
         network = Network(db)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error loading network'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'XX error loading network'}), mimetype='application/json')
    
      
     stoplist = []

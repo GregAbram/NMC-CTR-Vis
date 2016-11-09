@@ -78,12 +78,14 @@ class Network:
                 self.routes.append([r['id'], r['nodes'], r['links']])
        
         if 'trips' in db.collection_names():
-            for t in db['trips'].find().sort([("tripid",pymongo.ASCENDING)]):
+            trips = list(db['trips'].find())
+            trips.sort(key = lambda x: x["tripid"])
+            for t in trips:
                 self.trips.append({'id': t['trip'], 'departure': t['departure'], 'shape': t['shape'], 'route': t['route'], 'segments': t['segments'], 'stops': t['stops']})
         
         first = True
-        # for stop in db['stops'].find().sort([("stopid",pymongo.ASCENDING)]):
-        for stop in db['stops'].find():
+        stops = list(db['stops'].find())
+        for stop in stops:
             if first:
                 first = False
                 for i,j in enumerate(possible_stopattrs):
@@ -91,9 +93,11 @@ class Network:
                         self.stopattrs.append(possible_stopattrs[i])
                         self.stopattrunits.append(possible_stopattrunits[i])
             self.stops.append(Stop(stop['nodeid'], stop['trip'], [stop[i] for i in self.stopattrs]))
-        
+
         first = True
-        for seg in db['segments'].find().sort([("segmentid",pymongo.ASCENDING)]):
+        segments = list(db['segments'].find())
+        segments.sort(key = lambda x : x["segmentid"])
+        for seg in segments:
             if first:
                 first = False
                 for i,j in enumerate(possible_segattrs):
@@ -102,7 +106,6 @@ class Network:
                         self.segattrunits.append(possible_segattrunits[i])
                
             self.segments.append(Segment(seg['linkid'], seg['trip'], [seg[i] for i in self.segattrs]))
-        
         
         for indx,node in enumerate(db['nodes'].find()):
                             
@@ -121,7 +124,7 @@ class Network:
             self.nodes.append(Node(node['id'], node['type'], node['location'], stops, [node[i] for i in self.nodeattrs]))
         
         self.nodetypes = ','.join([str(i) for i in db.nodes.distinct('type')])
-        
+
         indx = -1
         skips = 0
         link = {'foo': 'none'}
