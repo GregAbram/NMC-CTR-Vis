@@ -1,8 +1,9 @@
-from django.conf.urls import patterns, url
+# from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from visualizer import views
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^visualize/(?P<database>.+)/', views.visualize),
     url(r'^list_datasets/(?P<database>.+)/', views.list_datasets),
     url(r'^load_network/(?P<database>.+)/', views.load_network),
@@ -18,5 +19,5 @@ urlpatterns = patterns('',
     url(r'^transit/(?P<database>.+)/(?P<routes>.+)/(?P<start>.+)/(?P<end>.+)/(?P<directions>.+)/(?P<with_feeders>.+)$', views.transit),
     url(r'^transitOD/(?P<database>.+)/(?P<aggregation>.+)/(?P<start>.+)/(?P<end>.+)/(?P<origins>.+)/(?P<destinations>.+)$', views.transitOD),
     url(r'^$', views.network_page, name='network_page'),
-)   
+    ]
 

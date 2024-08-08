@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.utils import simplejson 
+# from django.utils import simplejson 
+import json as simplejson
 import contour_tools
 import pymongo
 import numpy
@@ -26,9 +27,9 @@ def list_datasets(request, database):
     try:
         db = attach_mongo(request, database)
         datasets = [i['name'] for i in db['Variables'].find()]
-        return HttpResponse(simplejson.dumps({'status': 'OK', 'datasets': datasets}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'OK', 'datasets': datasets}), content_type='application/json')
     except:
-        return HttpResponse(simplejson.dumps({'status': 'unable to query datasets'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'unable to query datasets'}), content_type='application/json')
 
 def network_page(request):
     dbs = []
@@ -47,10 +48,10 @@ def load_OD_nodes(request, database, do_origins):
     try:
         db = attach_mongo(request, database)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'Unable to access network: %s' % (database)}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'Unable to access network: %s' % (database)}), content_type='application/json')
     
     if 'paths' not in db.collection_names():
-        return HttpResponse(simplejson.dumps({'status': 'No path data in network: %s' % (database)}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'No path data in network: %s' % (database)}), content_type='application/json')
        
     if int(do_origins) == 1:
         nodeids = db.paths.distinct('orig')
@@ -59,7 +60,7 @@ def load_OD_nodes(request, database, do_origins):
         
     r = {'status': 'OK', 'name': database, 'nodeids': nodeids}
     rjson = simplejson.dumps(r)
-    return HttpResponse(rjson, mimetype='application/json')
+    return HttpResponse(rjson, content_type='application/json')
 
 def load_OD_distribution_data(request, database, interval, given_origins, nodeids):
 
@@ -114,10 +115,10 @@ def load_OD_distribution_data(request, database, interval, given_origins, nodeid
     
         r = {'status': 'OK', 'name': database, 'interval': interval, 'data_range': (min_count, max_count), 'number_of_timesteps': len(timestep_data), 'timesteps': [i*interval for i in range(len(timestep_data))], 'data': timestep_data}
         rjson = simplejson.dumps(r)
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
 
     except:
-        return HttpResponse(simplejson.dumps({'status': 'Unable to get OD distributon data'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'Unable to get OD distributon data'}), content_type='application/json')
 
     
 def load_link_paths(request, database, interval, selected_links, agg):
@@ -125,7 +126,7 @@ def load_link_paths(request, database, interval, selected_links, agg):
     try:
         db = attach_mongo(request, database)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'Unable to load network' %  (database)}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'Unable to load network' %  (database)}), content_type='application/json')
 
     links = [int(s) for s in selected_links[1:-1].split(',')]
     interval = int(interval)
@@ -224,7 +225,7 @@ def load_link_paths(request, database, interval, selected_links, agg):
             t0 = t1
             
     else:
-        return HttpResponse(simplejson.dumps({'status': 'Unknown aggregation type (%s)' %  agg}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'Unknown aggregation type (%s)' %  agg}), content_type='application/json')
 
     timestep_data = []
     maxv = 0       
@@ -248,7 +249,7 @@ def load_link_paths(request, database, interval, selected_links, agg):
     interval = interval / 60 # back to minutes
     r = {'status': 'OK', 'name': database, 'number_of_timesteps': number_of_timesteps, 'interval': interval, 'min': minv, 'max': maxv, 'timesteps': [i*interval for i in range(number_of_timesteps)], 'data': data}
     rjson = simplejson.dumps(r)
-    return HttpResponse(rjson, mimetype='application/json')
+    return HttpResponse(rjson, content_type='application/json')
 
 def load_corridor_travel_times(request, database):
     try:
@@ -280,10 +281,10 @@ def load_corridor_travel_times(request, database):
     
         r = {'status': 'OK', 'name': database, 'data_range': (m,M), 'timestamps': timestamps, 'paths': paths, 'routes': routes, 'data': data}
         rjson = simplejson.dumps(r)
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
 
     except:
-        return HttpResponse(simplejson.dumps({'status': 'No such network as %s' %  database}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'No such network as %s' %  database}), content_type='application/json')
 
 def load_OD_reached_nodes(request, database, given_origins, nodeids):
 
@@ -302,10 +303,10 @@ def load_OD_reached_nodes(request, database, given_origins, nodeids):
 
         r = {'status': 'OK', 'name': database, 'nodeids': reached}
         rjson = simplejson.dumps(r)
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
     
     except:
-        return HttpResponse(simplejson.dumps({'status': 'Unable to load reached nodes'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'Unable to load reached nodes'}), content_type='application/json')
 
 
 def load_OD_paths(request, database, interval, aggregation, origins, destinations):
@@ -346,7 +347,7 @@ def load_OD_paths(request, database, interval, aggregation, origins, destination
             m += '}'
         
         else:
-            return HttpResponse(simplejson.dumps({'status': 'invalid aggregation: %s' % aggregation}), mimetype='application/json')
+            return HttpResponse(simplejson.dumps({'status': 'invalid aggregation: %s' % aggregation}), content_type='application/json')
         
         r  = 'function(key, values) {'
         r +=   't = 0;'
@@ -375,10 +376,10 @@ def load_OD_paths(request, database, interval, aggregation, origins, destination
         r = {'status': 'OK', 'name': database, 'number_of_timesteps': nts, 'interval': interval, 'max': maxv, 'timesteps': [i*interval for i in range(nts+1)], 'data': timestep_data}
         
         rjson = simplejson.dumps(r)
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
                        
     except:
-        return HttpResponse(simplejson.dumps({'status': 'unable to query DB for OD paths'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'unable to query DB for OD paths'}), content_type='application/json')
     
 def load_reachtime(request, database, origins, interval, contour_levels, wndw, width, clip, elim_passed, artery):
     try:
@@ -602,9 +603,9 @@ def load_reachtime(request, database, origins, interval, contour_levels, wndw, w
         
         r = {'status': 'OK', 'name': database, 'contour_levels': contour_levels, 'centroid': centroid, 'radius': radius, 'interval': interval, 'max': max_count, 'timesteps': [i*interval for i in range(len(timesteps))], 'data': timesteps}
         rjson = simplejson.dumps(r)
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error evaluating contours'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error evaluating contours'}), content_type='application/json')
 
 def load_weighted_average(request, network, network2, weighted_values, volumes, aggregation, result_name):
 
@@ -613,7 +614,7 @@ def load_weighted_average(request, network, network2, weighted_values, volumes, 
         calc = Calc(host=MONGO_HOST, network=network, user=vu.user, pw=vu.dbpw)
     except:
         print sys.exc_info()
-        return HttpResponse(simplejson.dumps({'status': 'error accessing database'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error accessing database'}), content_type='application/json')
 
     try:
         wdata = calc.Execute('%s:%s.sum(%s)' % (network, weighted_values, aggregation))
@@ -638,9 +639,9 @@ def load_weighted_average(request, network, network2, weighted_values, volumes, 
         data = data.tolist()
          
         rjson = simplejson.dumps({'status': 'OK', 'attribute': {result_name: {'units': wdata.units, 'timesteps': list(wdata.timesteps), 'ids': list(wdata.linkids), 'data': data}}})
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error evaluating expression'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error evaluating expression'}), content_type='application/json')
  
 def load_data(request, network, varname, units, varstring):
                   
@@ -649,23 +650,23 @@ def load_data(request, network, varname, units, varstring):
         calc = Calc(host=MONGO_HOST, network=network, user=vu.user, pw=vu.dbpw)
     except:
         print sys.exc_info()
-        return HttpResponse(simplejson.dumps({'status': 'error accessing database'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error accessing database'}), content_type='application/json')
 
     try:
         tmp = varstring.replace('DIVIDEBY', '/')
         tdd = calc.Execute(tmp)
         data = tdd.data.tolist()
         rjson = simplejson.dumps({'status': 'OK', 'attribute': {varname: {'units': units, 'timesteps': list(tdd.timesteps), 'ids': list(tdd.linkids), 'data': data}}})
-        return HttpResponse(rjson, mimetype='application/json')
+        return HttpResponse(rjson, content_type='application/json')
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error evaluating expression'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error evaluating expression'}), content_type='application/json')
 
 def load_network(request, database):
     try:
         db = attach_mongo(request, database)
         network = Network(db)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'XX error loading network'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'XX error loading network'}), content_type='application/json')
    
      
     stoplist = []
@@ -719,7 +720,7 @@ def load_network(request, database):
               
     s = simplejson.dumps(result)
 
-    return HttpResponse(s, mimetype='application/json')
+    return HttpResponse(s, content_type='application/json')
 
 def delete_database(request, database):
     return HttpResponseRedirect('error - no deleting networks!') 
@@ -749,7 +750,7 @@ def transit(request, database, routes, start, end, directions, with_feeders):
     try:
         db = attach_mongo(request, database)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error loading network'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error loading network'}), content_type='application/json')
     
 
     # The following creates a query that looks for all
@@ -887,14 +888,14 @@ def transit(request, database, routes, start, end, directions, with_feeders):
               
     s = simplejson.dumps(result)
 
-    return HttpResponse(s, mimetype='application/json')
+    return HttpResponse(s, content_type='application/json')
 
 def transitOD(request, database, aggregation, start, end, origins, destinations):
              
     try:
         db = attach_mongo(request, database)
     except:
-        return HttpResponse(simplejson.dumps({'status': 'error loading network'}), mimetype='application/json')
+        return HttpResponse(simplejson.dumps({'status': 'error loading network'}), content_type='application/json')
     
     c = db.stops.find()
     stop2node = [-1]*c.count()
@@ -956,4 +957,4 @@ def transitOD(request, database, aggregation, start, end, origins, destinations)
               
     s = simplejson.dumps(result)
 
-    return HttpResponse(s, mimetype='application/json')
+    return HttpResponse(s, content_type='application/json')

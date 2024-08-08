@@ -12,11 +12,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', 
-        'NAME': '/var/www/django/NMC/sqlite.db',
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',                      
-        'PORT': '',                     
+        'NAME': '/data/sqlite.db',
     }
 }
 
@@ -49,7 +45,7 @@ USE_TZ = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/var/www/example.com/media/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = '/vista/media'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash.
@@ -60,11 +56,11 @@ MEDIA_URL = ''
 # Don't put anything in this directory yourself; store your static files
 # in apps' "static/" subdirectories and in STATICFILES_DIRS.
 # Example: "/var/www/example.com/static/"
-STATIC_ROOT = '/var/www/django/NMC/staticfiles'
+STATIC_ROOT = '/vista/static'
 
 # URL prefix for static files.
 # Example: "http://example.com/static/", "http://static.example.com/"
-STATIC_URL = '/staticfiles/'
+STATIC_URL = '/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -82,7 +78,14 @@ STATICFILES_FINDERS = (
 )
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'un-#vzdh2b=kt5qq35)t*^!=b7z_td5e&v73-*pkkfsnfv(gwu'
+# SECRET_KEY = 'un-#vzdh2b=kt5qq35)t*^!=b7z_td5e&v73-*pkkfsnfv(gwu'
+
+import os
+try:
+    SECRET_KEY = os.environ["SECRET_KEY"]
+except KeyError as e:
+    # raise RuntimeError("Could not find a SECRET_KEY in environment") from e
+    raise RuntimeError("Could not find a SECRET_KEY in environment")
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
@@ -90,6 +93,25 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.Loader',
 )
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [ '/vista/NMC-CTR-Vis/templates' ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.template.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -107,7 +129,7 @@ ROOT_URLCONF = 'NMC.urls'
 WSGI_APPLICATION = 'NMC.wsgi.application'
 
 TEMPLATE_DIRS = (
-    '/var/www/django/NMC/templates',
+    '/vista/NMC-CTR-Vis/templates',
 )
 
 INSTALLED_APPS = (
