@@ -38,6 +38,6 @@ RUN chown root:root /usr/bin/sudo && chmod 4755 /usr/bin/sudo
 
 EXPOSE 8000
 
-# ENTRYPOINT ["/bin/bash"]
 ENTRYPOINT ["/bin/bash", "/vista/NMC-CTR-Vis/docker/start.sh"]
+# ENTRYPOINT ["/bin/bash"]
 
