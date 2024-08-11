@@ -4,6 +4,10 @@ The Vista container is based on the **python:2.7**. This is a Debian version 10(
 
 The big picture is that this container mounts two directories from the host file system.  The **data** directory contains the persistent Mongo and SQLite databases.  The **project** directory contains the Django web application.   At setup time we build the application container.   At run time we run this container, linking the host-side data and project directories into the image as **/data** and **vista** and exposing the web service port.
 
+## Requirements on the Host
+
+Should be just a running Docker instance.
+
 ## Create vista user
 
 Key to convenient interchange of permissions between the container and the host is a common user, agreeing in user and group UID's, on both the host and in the container.   To do this you first create a **vista** user on the host, then (below) modify the Dockerfile to create an eqivalent container-side user.  As superuser on the host:
