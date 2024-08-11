@@ -55,15 +55,12 @@ After the first run this directory will also contain log files.
 		
 ## Running the web application
 
-1.  In the docker subdirectory, run the container, linking the ../.. directory (eg. the directory in which the NMC-CTR-Vis git project was cloned) as /vista and the data directory (wherever, but in this example its in the 
+1.  In the docker subdirectory, run the container, linking the ../.. directory (eg. the directory in which the NMC-CTR-Vis git project was cloned) as /vista and the data directory (wherever, but in this example its in the vista home directory.
 
-		cd ~/vista
-
-2.  Run the image under Docker:
-
-		docker run -v `pwd`/../..:/vista -v {data directory}:/data -v 8000:8000 vista
+		docker run -dt -v `pwd`/../..:/vista -v {data directory}:/data -p 8000:8000 vista
 		
-	At this point Vista *should* be running and accessible at port 8000 from anywhere the host is visible.
+At this point Vista *should* be running and accessible at port 8000 from anywhere the host is visible.   The command will return to the prompt and you can exit.
+
 		
 
 
