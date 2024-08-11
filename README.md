@@ -42,7 +42,7 @@ After the first run this directory will also contain log files.
 		
 2. Checkout source and change to **container** branch
 
-		git clone https://github.com/GregAbram/NMC-CTR-Vis.git
+		git clone git clone git@github.com:GregAbram/NMC-CTR-Vis.git
 		cd NMC-CTR-Vis
 		git checkout container
 		
