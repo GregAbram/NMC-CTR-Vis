@@ -52,9 +52,10 @@ After the first run this directory will also contain log files.
 		mkdir media
 		mkdir static
 		
-4.  Enter the docker subdirectory of the cloned NMC-CTR-Vis project and build Docker image.  This installs almost everything from on-line packages, but mongo is installed from an included tar file.
+4.  Enter the docker subdirectory of the cloned NMC-CTR-Vis project and build Docker image.  This installs almost everything from on-line packages, but mongo is installed from an external tar file.
 
 		cd ~/vista/NMR-CTR-Vis/docker
+		cp {wherever}/mongodb-linux-x86_64-2.6.12.tgz .
 		docker build -t vista .
 		
 ## Running the web application
