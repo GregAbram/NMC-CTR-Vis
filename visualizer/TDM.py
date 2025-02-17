@@ -23,7 +23,7 @@ class TDM:
         self.olinkids  = olinkids
         self.dlinkids  = dlinkids
         self.timesteps = timesteps
-        if data != None:
+        if data is not None:
             self.data    = numpy.array(data).reshape([len(timesteps), len(linkids)])
             if type(self.data[0][0]) == numpy.float64:
                 self.type = TDM.IS_FLOAT64

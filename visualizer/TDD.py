@@ -25,7 +25,7 @@ class TDD:
         self.timesteps = timesteps
         self.units     = units
         
-        if data != None:
+        if data is not None:
             self.data    = numpy.array(data).reshape([len(timesteps), len(linkids)])
             if type(self.data[0][0]) == numpy.float64:
                 self.type = TDD.IS_FLOAT64
@@ -37,7 +37,7 @@ class TDD:
             self.data    = None
             self.type    = -1
         
-        if linkids != None:
+        if linkids is not None:
             self.check_linkid_ordering()
 
     def dump(self):

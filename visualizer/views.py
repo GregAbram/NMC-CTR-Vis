@@ -573,7 +573,7 @@ def load_reachtime(request, database, origins, interval, contour_levels, wndw, w
                         bearing = numpy.linspace(-180,180,361)
                         radii = list(linterp(bearing))
                         
-                        if tmp != None:
+                        if tmp is not None:
                             for j in range(len(radii)):
                                 if radii[j] < tmp[j]: 
                                     radii[j] = tmp[j]
