@@ -36,8 +36,16 @@ RUN mkdir -p /vista \
 COPY  vista_nginx.conf /etc/nginx/sites-available/vista_nginx.conf 
 RUN ln -s /etc/nginx/sites-available/vista_nginx.conf /etc/nginx/sites-enabled/
 
-COPY mongodb-linux-x86_64-2.6.12.tgz /usr/local
-RUN cd /usr/local && tar xzf mongodb-linux-x86_64-2.6.12.tgz && rm mongodb-linux-x86_64-2.6.12.tgz
+RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh \
+    && apt-get install git-lfs
+
+RUN cd /usr/local \
+    && git clone https://github.com/GregAbram/NMC-CTR-Vis \
+    && cd NMC-CTR-Vis \
+    && git checkout container 
+
+RUN cd /usr/local \
+    && tar xzf /usr/local/NMC-CTR-Vis/docker/mongodb-linux-x86_64-2.6.12.tgz 
 
 RUN chown root:root /usr/bin/sudo && chmod 4755 /usr/bin/sudo
 
