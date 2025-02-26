@@ -27,6 +27,11 @@ RUN groupadd -r sudoers  \
     && useradd -m -s /bin/bash -r -g vista -u 1003 -G sudoers vista \
     && useradd -m -s /bin/bash -r -g nginx -u 1004 -G sudoers nginx
    
+RUN mkdir -p /vista \
+    && cd /vista \
+    && git clone https://github.com/GregAbram/NMC-CTR-Vis \
+    && cd NMC-CTR-Vis \
+    && git checkout container
 
 COPY  vista_nginx.conf /etc/nginx/sites-available/vista_nginx.conf 
 RUN ln -s /etc/nginx/sites-available/vista_nginx.conf /etc/nginx/sites-enabled/
@@ -36,8 +41,5 @@ RUN cd /usr/local && tar xzf mongodb-linux-x86_64-2.6.12.tgz && rm mongodb-linux
 
 RUN chown root:root /usr/bin/sudo && chmod 4755 /usr/bin/sudo
 
-EXPOSE 8000
-
 ENTRYPOINT ["/bin/bash", "/vista/NMC-CTR-Vis/docker/start.sh"]
-# ENTRYPOINT ["/bin/bash"]
 
