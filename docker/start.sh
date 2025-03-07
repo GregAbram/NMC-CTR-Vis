@@ -8,4 +8,6 @@ export SECRET_KEY=`cat .secret_key`
 cd NMC-CTR-Vis
 echo 'yes' | python2 manage.py collectstatic
 
+sed -i  '/sendfile/i uwsgi_read_timeout 600s;' /etc/nginx/nginx.conf
+
 uwsgi --socket ../vista.sock --wsgi-file NMC/wsgi.py --uid vista --chmod-socket=666 > /data/uwsgi.log 2>&1 
