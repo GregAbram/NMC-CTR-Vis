@@ -1,4 +1,6 @@
 /usr/local/mongodb-linux-x86_64-2.6.12/bin/mongod  -dbpath=/data/vista-db > /data/mongo.log 2>&1  &
+
+sed -i  '/sendfile/i uwsgi_read_timeout 600s;' /etc/nginx/nginx.conf
 /etc/init.d/nginx start
 
 cd /vista
@@ -7,7 +9,5 @@ export SECRET_KEY=`cat .secret_key`
 
 cd NMC-CTR-Vis
 echo 'yes' | python2 manage.py collectstatic
-
-sed -i  '/sendfile/i uwsgi_read_timeout 600s;' /etc/nginx/nginx.conf
 
 uwsgi --socket ../vista.sock --wsgi-file NMC/wsgi.py --uid vista --chmod-socket=666 > /data/uwsgi.log 2>&1 
