@@ -49,5 +49,5 @@ RUN cd /usr/local \
 
 RUN chown root:root /usr/bin/sudo && chmod 4755 /usr/bin/sudo
 
-ENTRYPOINT ["/bin/bash", "/vista/NMC-CTR-Vis/docker/start.sh"]
+ENTRYPOINT ["/bin/bash", "/usr/local/NMC-CTR-Vis/docker/start.sh"]
 
